@@ -46,33 +46,33 @@ class ContentController extends Controller
             }
         }
 
-        $type = Type::find($request->type);
-        if (!$type->is_one_video) {
-            if ($request->file("episodes")) {
-                foreach ($request->file("episodes") as $numberSeason => $episodes) {
-                    $season = new Season();
-                    $season->number = $numberSeason;
-                    $season->content = $content->id;
-                    $season->save();
-                    foreach ($episodes as $episodeNumebr => $file) {
-                        $newEpisode = new Episode();
-                        $newEpisode->season = $season->id;
-                        $newEpisode->number = $episodeNumebr;
-                        $path = $file->store('contents/' . str_replace(" ", "-", $request->title_eng) . '/', 'public');
-                        $newEpisode->url = 'public/storage/' . $path;
-                        $newEpisode->save();
-                    }
-                }
-            }
-        } else {
-            if ($request->file("video")) {
-                $path = $request->file("video")->store('contents/' . str_replace(" ", "-", $request->title_eng) . '/', 'public');
-                $video = new Video();
-                $video->content = $content->id;
-                $video->url = 'public/storage/' . $path;
-                $video->save();
-            }
-        }
+        // $type = Type::find($request->type);
+        // if (!$type->is_one_video) {
+        //     if ($request->file("episodes")) {
+        //         foreach ($request->file("episodes") as $numberSeason => $episodes) {
+        //             $season = new Season();
+        //             $season->number = $numberSeason;
+        //             $season->content = $content->id;
+        //             $season->save();
+        //             foreach ($episodes as $episodeNumebr => $file) {
+        //                 $newEpisode = new Episode();
+        //                 $newEpisode->season = $season->id;
+        //                 $newEpisode->number = $episodeNumebr;
+        //                 $path = $file->store('contents/' . str_replace(" ", "-", $request->title_eng) . '/', 'public');
+        //                 $newEpisode->url = 'public/storage/' . $path;
+        //                 $newEpisode->save();
+        //             }
+        //         }
+        //     }
+        // } else {
+        //     if ($request->file("video")) {
+        //         $path = $request->file("video")->store('contents/' . str_replace(" ", "-", $request->title_eng) . '/', 'public');
+        //         $video = new Video();
+        //         $video->content = $content->id;
+        //         $video->url = 'public/storage/' . $path;
+        //         $video->save();
+        //     }
+        // }
 
         return redirect()->route('admin.contents')->with(['success' => 'Контент создан успешно!']);
     }

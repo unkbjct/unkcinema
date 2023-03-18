@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    var seasonsCount = 0;
-
     if (document.getElementById("type") && document.getElementById("type").value) {
         let attributes = JSON.parse(document.getElementById("type").options[document.getElementById("type").selectedIndex].dataset.attributes);
         attributes.forEach(attr => {
@@ -27,12 +25,15 @@ document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll(".attributes-item").forEach(item => {
                 item.remove();
             })
-            if ((Boolean)((Number)(this.options[this.selectedIndex].dataset.isOneVideo))) {
-                document.getElementById("is-one-video-0").classList.add("visually-hidden")
-            } else {
-                document.getElementById("is-one-video-1").classList.add("visually-hidden")
+            if (document.querySelector(".change-frame")) {
+                if ((Boolean)((Number)(this.options[this.selectedIndex].dataset.isOneVideo))) {
+                    document.getElementById("is-one-video-0").classList.add("visually-hidden")
+                } else {
+                    document.getElementById("is-one-video-1").classList.add("visually-hidden")
+                }
+                if (this.options[this.selectedIndex].dataset.isOneVideo)
+                    document.getElementById("is-one-video-" + this.options[this.selectedIndex].dataset.isOneVideo).classList.remove("visually-hidden")
             }
-            if (this.options[this.selectedIndex].dataset.isOneVideo) document.getElementById("is-one-video-" + this.options[this.selectedIndex].dataset.isOneVideo).classList.remove("visually-hidden")
 
             if (!this.options[this.selectedIndex].dataset.attributes) return;
             let attributes = JSON.parse(this.options[this.selectedIndex].dataset.attributes);
@@ -55,91 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
     }
 
-    if (document.getElementById("add-season")) {
-        document.getElementById("add-season").addEventListener("click", function () {
-            seasonsCount++;
-            let element =
-                '<div class="accordion-item">' +
-                '<h2 class="accordion-header">' +
-                '<button class="accordion-button" type="button" data-bs-toggle="collapse"' +
-                `data-bs-target="#collapseSeason${seasonsCount}"><span class="number-season">${seasonsCount} Сезон</span></button>` +
-                '</h2>' +
-                `<div id="collapseSeason${seasonsCount}" class="accordion-collapse collapse show">` +
-                '<div class="accordion-body">' +
-                '<div class="d-flex">' +
-                `<button type="button" data-episodes-count="0" data-season="${seasonsCount}" class="btn btn-dark mb-3 add-episode">Добавить серию</button>` +
-                '<button type="button" class="btn btn-outline-danger ms-auto mb-3 remove-season">Удалить сезон</button>' +
-                '</div>' +
-                '<ul class="list-group">' +
-                '</ul>' +
-                '</div>' +
-                '</div>' +
-                '</div>'
-            document.getElementById("seasons-list").insertAdjacentHTML("afterbegin", element)
-        })
-    }
-
-    if (document.getElementById("seasons-list")) {
-        // console.log(this.querySelectorAll())
-        this.getElementById("seasons-list").addEventListener("click", function (e) {
-            if (e.target.classList.contains("add-episode")) {
-                let btn = e.target;
-                btn.dataset.episodesCount++;
-                element =
-                    '<li class="list-group-item list-group-item-action" aria-current="true">' +
-                    '<div class="row gy-4">' +
-                    '<div class="col-md-2">' +
-                    `<div class="h-100 d-flex align-items-center"><div><span class="number">${btn.dataset.episodesCount}</span> Серия</div></div>` +
-                    '</div>' +
-                    '<div class="col-md-8">' +
-                    '<div>' +
-                    `<input type="file" required name="episodes[${btn.dataset.season}][${btn.dataset.episodesCount}]" id="" class="form-control form-control-sm episode-video">` +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="col-md-2">' +
-                    '<div class="d-flex">' +
-                    '<button type="button" class="btn btn-sm btn-danger ms-auto remove-episode">Удалить</button>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</li>'
-                btn.parentElement.nextSibling.insertAdjacentHTML("afterbegin", element)
-            }
-            if (e.target.classList.contains("remove-episode")) {
-                let btn = e.target;
-                list = btn.parentElement.parentElement.parentElement.parentElement.parentElement.children;
-                btnAdd = btn.parentElement.parentElement.parentElement.parentElement.parentElement.previousSibling.children[0];
-                btn.parentElement.parentElement.parentElement.parentElement.remove();
-
-                btnAdd.dataset.episodesCount = list.length;
-                let length = list.length;
-                for (i = 0; i < list.length; i++) {
-                    list[i].querySelectorAll(".number")[0].textContent = length
-                    list[i].querySelectorAll(".episode-video")[0].setAttribute("name", `episodes[${btnAdd.dataset.season}][${length}]`)
-
-                    length--;
-                }
-            }
-            if (e.target.classList.contains("remove-season")) {
-                e.target.parentElement.parentElement.parentElement.parentElement.remove();
-                seasonsCount--;
-                let length = seasonsCount;
-                list = document.getElementById("seasons-list").children;
-                for (i = 0; i < list.length; i++) {
-                    list[i].querySelector(".accordion-button").dataset.bsTarget = `#collapseSeason${length}`;
-                    list[i].querySelector(".accordion-collapse").id = `collapseSeason${length}`;
-                    list[i].querySelector(".add-episode").dataset.season = length;
-                    list[i].querySelector(".number-season").textContent = length + " Сезон";
-                    let episodesLength = list[i].querySelector(".add-episode").dataset.episodesCount;
-                    list[i].querySelectorAll(".list-group-item").forEach(item => {
-                        item.querySelector(".episode-video").setAttribute("name", `episodes[${length}][${episodesLength}]`)
-                        episodesLength--;
-                    })
-                    length--;
-                }
-            }
-        })
-    }
+    
 
     if (document.getElementById("add-category")) {
         document.getElementById("add-category").addEventListener("click", function () {

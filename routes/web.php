@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PostControllers\CategoryController as AdminCatego
 use App\Http\Controllers\Admin\PostControllers\ContentController as AdminContentCore;
 use App\Http\Controllers\Admin\PostControllers\TypeController as AdminTypeCore;
 use App\Http\Controllers\GetControllers\SingleController as SingleViews;
+use App\Http\Controllers\HelpController;
 use App\Http\Controllers\PostControllers\PersonalController as PersonalCore;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::post('/upload/large/file', [HelpController::class, 'uploadLargeFiles'])->name('files.upload.large');
 
 Route::get('/', [SingleViews::class, 'welcome'])->name("home");
 

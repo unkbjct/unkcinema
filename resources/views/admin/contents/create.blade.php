@@ -7,7 +7,6 @@
 @section('components')
     <link rel="stylesheet" href="{{ asset('public/css/contents.css') }}">
     <script src="{{ asset('public/js/contents.js') }}"></script>
-    <script src="{{ asset('public/js/resumable.js') }}"></script>
 @endsection
 
 @section('admin')
@@ -95,24 +94,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-12 visually-hidden change-frame" id="is-one-video-1">
-                        <div class="mb-3">
-                            <label for="video" class="form-label">Видео</label>
-                            <input type="file" name="video" id="video" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-lg-12 visually-hidden change-frame" id="is-one-video-0">
-                        <div class="mb-3">
-                            <div class="mb-3">
-                                <button type="button" id="add-season" class="btn btn-dark">Добавить новый сезон</button>
-                            </div>
-                            <div class="accordion" id="seasons-list">
-                                
-                            </div>
-                        </div>
-                    </div>
                     <div class="col-lg-12">
                         <div class="mb-3 d-flex">
+                            <button class="btn btn-outline-danger" disabled>Добавить видео можно после создания
+                                контента</button>
                             <button class="btn ms-auto btn-danger">Создать контент</button>
                         </div>
                     </div>
