@@ -8,6 +8,8 @@ use App\Models\Category;
 use App\Models\Content;
 use App\Models\Content_attribute;
 use App\Models\Content_category;
+use App\Models\Episode;
+use App\Models\Season;
 use App\Models\Type;
 use Illuminate\Http\Request;
 
@@ -46,9 +48,18 @@ class ContentController extends Controller
             ->select("categories.title", "categories.id")
             ->get();
         $content->attributes = Content_attribute::where("content", $content->id)
-        ->join("attributes", "content_attributes.attribute", "=", "attributes.id")
-        ->select("attributes.name as name", "attributes.id as id", "content_attributes.value as value")
-        ->get();
+            ->join("attributes", "content_attributes.attribute", "=", "attributes.id")
+            ->select("attributes.name as name", "attributes.id as id", "content_attributes.value as value")
+            ->get();
+        if ($content->type->is_one_video) {
+            // $content->video = 
+        } else {
+            $content->seasons = Season::where("content", $content->id)->orderByDesc('id')->get();
+            $content->seasons->transform(function ($season) {
+                $season->episodes = Episode::where("season", $season->id)->orderByDesc('id')->get();
+                return $season;
+            });
+        }
         $types = Type::orderBy("title")->get();
         $types->transform(function ($item) {
             $item->attributes = Attribute::where("type", $item->id)->get();

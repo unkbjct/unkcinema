@@ -13,29 +13,143 @@
 
 @section('scripts')
     <script type="text/javascript">
-        var seasonsCount = 0;
+        function enableUpload(element) {
+            let browseFile = $(element.querySelector(".browseFile"));
+            let progress = $(element.querySelector(".progress"));
+
+            let resumable = new Resumable({
+                target: '{{ route('files.upload.large') }}',
+                query: {
+                    _token: '{{ csrf_token() }}',
+                    contentId: browseFile.data("content-id"),
+                    episodeId: browseFile.data("episode-id"),
+                    // season = 
+                }, // CSRF token
+                fileType: ['mp4', 'avi', 'mkv'],
+                chunkSize: 10 * 1024 *
+                    1024, // default is 1*1024*1024, this should be less than your maximum limit in php.ini
+                headers: {
+                    'Accept': 'application/json'
+                },
+                testChunks: false,
+                throttleProgressCallbacks: 1,
+            });
+
+            resumable.assignBrowse(browseFile[0]);
+
+            resumable.on('fileAdded', function(file) { // trigger when file picked
+                browseFile.text("Дождитесь окончания загрузки")
+                browseFile.attr("disabled", "disabled")
+                browseFile.next().remove();
+                browseFile.prev().remove();
+                showProgress();
+                resumable.upload() // to actually start uploading.
+            });
+
+            resumable.on('fileProgress', function(file) { // trigger when file progress update
+
+                updateProgress(Math.floor(file.progress() * 100));
+            });
+
+            resumable.on('fileSuccess', function(file,
+                response) { // trigger when file upload complete
+                response = JSON.parse(response)
+                // $('#videoPreview').attr('src', response.path);
+                // $('.card-footer').show();
+                browseFile.text("Изменить видео")
+                browseFile.removeClass("btn-outline-dark")
+                browseFile.addClass("btn-outline-danger")
+                browseFile.removeAttr("disabled")
+                browseFile.attr("title", "Изменить видео")
+                browseFile.before(
+                    `<button disabled class="btn btn-sm me-2 btn-dark">Видео загружено</button>`
+                )
+                browseFile.after(
+                    `<a href='${response.path}' target="true" class="btn btn-sm ms-2 btn-dark btn-watch">Посмотреть видео</a>`
+                )
+                // progress.find('.progress-bar').removeClass('progress-bar-striped');
+                // progress.find('.progress-bar').removeClass('progress-bar-animated');
+                hideProgress();
+            });
+
+            resumable.on('fileError', function(file,
+                response) { // trigger when there is any error
+                console.log(file, response)
+                alert('file uploading error.');
+                browseFile.text("Изменить видео")
+                browseFile.removeClass("btn-outline-dark")
+                browseFile.addClass("btn-outline-danger")
+                browseFile.removeAttr("disabled")
+                browseFile.attr("title", "Изменить видео")
+                browseFile.before(
+                    `<button disabled class="btn btn-sm me-2 btn-dark">Не удалось обновить видео</button>`
+                )
+                browseFile.after(
+                    `<a href='${response.path}' target="true" class="btn btn-sm ms-2 btn-dark btn-watch">Посмотреть видео</a>`
+                )
+                progress.hide();
+            });
+
+            function showProgress() {
+                progress.find('.progress-bar').css('width', '0%');
+                progress.find('.progress-bar').html('0%');
+                progress.find('.progress-bar').removeClass('bg-success');
+                progress.show();
+            }
+
+            function updateProgress(value) {
+                progress.find('.progress-bar').css('width', `${value}%`)
+                progress.find('.progress-bar').html(`${value}%`)
+            }
+
+            function hideProgress() {
+                progress.hide();
+            }
+        }
+        $(".list-group-item").each(function(index, element) {
+            enableUpload(element)
+        })
+
+
+
+        var seasonsCount = {{ $content->seasons->count() }};
 
         if (document.getElementById("add-season")) {
             document.getElementById("add-season").addEventListener("click", function() {
-                seasonsCount++;
-                let element =
-                    '<div class="accordion-item">' +
-                    '<h2 class="accordion-header">' +
-                    '<button class="accordion-button" type="button" data-bs-toggle="collapse"' +
-                    `data-bs-target="#collapseSeason${seasonsCount}"><span class="number-season">${seasonsCount} Сезон</span></button>` +
-                    '</h2>' +
-                    `<div id="collapseSeason${seasonsCount}" class="accordion-collapse collapse show">` +
-                    '<div class="accordion-body">' +
-                    '<div class="d-flex">' +
-                    `<button type="button" data-episodes-count="0" data-season="${seasonsCount}" class="btn btn-dark mb-3 add-episode">Добавить серию</button>` +
-                    '<button type="button" class="btn btn-outline-danger ms-auto mb-3 remove-season">Удалить сезон</button>' +
-                    '</div>' +
-                    '<ul class="list-group">' +
-                    '</ul>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>'
-                document.getElementById("seasons-list").insertAdjacentHTML("afterbegin", element)
+                $.ajax({
+                    url: '{{ route('core.admin.season.create') }}',
+                    method: 'post',
+                    data: {
+                        contentId: '{{ $content->id }}',
+                        seasonNumber: seasonsCount + 1,
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(id) {
+                        seasonsCount++;
+                        let element =
+                            '<div class="accordion-item">' +
+                            '<h2 class="accordion-header">' +
+                            '<button class="accordion-button" type="button" data-bs-toggle="collapse"' +
+                            `data-bs-target="#collapseSeason${seasonsCount}"><span class="number-season">${seasonsCount} Сезон</span></button>` +
+                            '</h2>' +
+                            `<div id="collapseSeason${seasonsCount}" class="accordion-collapse collapse show">` +
+                            '<div class="accordion-body">' +
+                            '<div class="d-flex">' +
+                            `<button type="button" data-episodes-count="0" data-season="${seasonsCount}" data-season-id="${id}" class="btn btn-dark mb-3 add-episode">Добавить серию</button>` +
+                            `<button type="button" class="btn btn-outline-danger ms-auto mb-3 remove-season"  data-season-id="${id}">Удалить сезон</button>` +
+                            '</div>' +
+                            '<ul class="list-group">' +
+                            '</ul>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>'
+                        document.getElementById("seasons-list").insertAdjacentHTML("afterbegin",
+                            element)
+                    },
+                    error: function() {
+                        alert("Что то пошло не так! Попробуйте позже")
+                    }
+                });
             })
         }
 
@@ -44,129 +158,122 @@
             document.getElementById("seasons-list").addEventListener("click", function(e) {
                 if (e.target.classList.contains("add-episode")) {
                     let btn = e.target;
-                    btn.dataset.episodesCount++;
-                    element =
-                        '<li class="list-group-item list-group-item-action" aria-current="true">' +
-                        '<div class="row gy-4">' +
-                        '<div class="col-md-2">' +
-                        `<div class="h-100 d-flex align-items-center"><div><span class="number">${btn.dataset.episodesCount}</span> Серия</div></div>` +
-                        '</div>' +
-                        '<div class="col-md-8">' +
-                        '<div>' +
-                        '<div id="upload-container" class="text-center">' +
-                        '<button type="button" id="browseFile" class="btn btn-primary">Brows' +
-                        'File</button>' +
-                        '</div>' +
-                        '<div style="display: none" class="progress mt-3" style="height: 25px">' +
-                        '<div class="progress-bar progress-bar-striped progress-bar-animated"' +
-                        'role="progressbar" aria-valuenow="75" aria-valuemin="0"' +
-                        'aria-valuemax="100" style="width: 75%; height: 100%">75%</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="col-md-2">' +
-                        '<div class="d-flex">' +
-                        '<button type="button" class="btn btn-sm btn-danger ms-auto remove-episode">Удалить</button>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '</li>'
-                    btn.parentElement.nextSibling.insertAdjacentHTML("afterbegin", element)
-
-                    
-                    let browseFile = $('#browseFile');
-                    let resumable = new Resumable({
-                        target: '{{ route('files.upload.large') }}',
-                        query: {
-                            _token: '{{ csrf_token() }}'
-                        }, // CSRF token
-                        fileType: ['mp4', 'avi', 'mkv'],
-                        chunkSize: 10 * 1024 *
-                            1024, // default is 1*1024*1024, this should be less than your maximum limit in php.ini
-                        headers: {
-                            'Accept': 'application/json'
+                    $.ajax({
+                        url: '{{ route('core.admin.episode.create') }}',
+                        method: 'post',
+                        data: {
+                            seasonId: $(e.target).data("season-id"),
+                            episodeNumber: (Number)(btn.dataset.episodesCount) + 1,
+                            _token: '{{ csrf_token() }}',
                         },
-                        testChunks: false,
-                        throttleProgressCallbacks: 1,
+                        success: function(id) {
+                            console.log(id)
+                            btn.dataset.episodesCount++;
+                            element =
+                                '<li class="list-group-item list-group-item-action" aria-current="true">' +
+                                '<div class="row gy-4">' +
+                                '<div class="col-md-2">' +
+                                `<div class="h-100 d-flex align-items-center"><div><span class="number">${btn.dataset.episodesCount}</span> Серия</div></div>` +
+                                '</div>' +
+                                '<div class="col-md-8">' +
+                                '<div>' +
+                                '<div class="upload-container text-center">' +
+                                `<button type="button" class="btn btn-outline-dark btn-sm browseFile" data-content-id="{{ $content->id }}" data-episode-id="${id}">Выберите файл</button>` +
+                                '</div>' +
+                                '<div style="display: none" class="progress mt-3" style="height: 25px">' +
+                                '<div class="progress-bar progress-bar-striped progress-bar-animated"' +
+                                'role="progressbar" aria-valuenow="75" aria-valuemin="0"' +
+                                'aria-valuemax="100" style="width: 75%; height: 100%">75%</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="col-md-2">' +
+                                '<div class="d-flex h-100 align-items-center">' +
+                                `<button type="button" class="btn btn-sm btn-danger ms-auto remove-episode" data-episode-id="${id}">Удалить</button>` +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</li>'
+                            element = $(element)[0]
+                            console.log(btn.parentElement)
+                            $(btn).parent().next().prepend(element)
+
+                            enableUpload(element)
+
+                        },
+                        error: function(response) {
+                            console.log(response)
+                            alert("Что то пошло не так! Попробуйте позже")
+                        }
                     });
-
-                    resumable.assignBrowse(browseFile[0]);
-
-                    resumable.on('fileAdded', function(file) { // trigger when file picked
-                        showProgress();
-                        resumable.upload() // to actually start uploading.
-                    });
-
-                    resumable.on('fileProgress', function(file) { // trigger when file progress update
-                        updateProgress(Math.floor(file.progress() * 100));
-                    });
-
-                    resumable.on('fileSuccess', function(file, response) { // trigger when file upload complete
-                        response = JSON.parse(response)
-                        // $('#videoPreview').attr('src', response.path);
-                        // $('.card-footer').show();
-                        alert('success')
-                    });
-
-                    resumable.on('fileError', function(file, response) { // trigger when there is any error
-                        console.log(file,response)
-                        alert('file uploading error.')
-                    });
-
-
-                    let progress = $('.progress');
-
-                    function showProgress() {
-                        progress.find('.progress-bar').css('width', '0%');
-                        progress.find('.progress-bar').html('0%');
-                        progress.find('.progress-bar').removeClass('bg-success');
-                        progress.show();
-                    }
-
-                    function updateProgress(value) {
-                        progress.find('.progress-bar').css('width', `${value}%`)
-                        progress.find('.progress-bar').html(`${value}%`)
-                    }
-
-                    function hideProgress() {
-                        progress.hide();
-                    }
                 }
                 if (e.target.classList.contains("remove-episode")) {
-                    let btn = e.target;
-                    list = btn.parentElement.parentElement.parentElement.parentElement.parentElement.children;
-                    btnAdd = btn.parentElement.parentElement.parentElement.parentElement.parentElement
-                        .previousSibling.children[0];
-                    btn.parentElement.parentElement.parentElement.parentElement.remove();
+                    $.ajax({
+                        url: '{{ route('core.admin.episode.remove') }}',
+                        method: 'post',
+                        data: {
+                            episodeId: $(e.target).data("episode-id"),
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(response) {
+                            console.log(response)
+                            let btn = e.target;
+                            list = btn.parentElement.parentElement.parentElement.parentElement
+                                .parentElement.children;
+                            btnAdd = $(btn).parent().parent().parent().parent().parent().prev()
+                                .children()[0]
+                            btn.parentElement.parentElement.parentElement.parentElement.remove();
 
-                    btnAdd.dataset.episodesCount = list.length;
-                    let length = list.length;
-                    for (i = 0; i < list.length; i++) {
-                        list[i].querySelectorAll(".number")[0].textContent = length
-                        list[i].querySelectorAll(".episode-video")[0].setAttribute("name",
-                            `episodes[${btnAdd.dataset.season}][${length}]`)
+                            btnAdd.dataset.episodesCount = list.length;
+                            let length = list.length;
+                            for (i = 0; i < list.length; i++) {
+                                list[i].querySelectorAll(".number")[0].textContent = length
+                                length--;
+                            }
+                        },
+                        error: function(respone) {
+                            console.log(respone)
+                            alert("Что то пошло не так! Попробуйте позже")
+                        }
+                    });
 
-                        length--;
-                    }
                 }
                 if (e.target.classList.contains("remove-season")) {
-                    e.target.parentElement.parentElement.parentElement.parentElement.remove();
-                    seasonsCount--;
-                    let length = seasonsCount;
-                    list = document.getElementById("seasons-list").children;
-                    for (i = 0; i < list.length; i++) {
-                        list[i].querySelector(".accordion-button").dataset.bsTarget = `#collapseSeason${length}`;
-                        list[i].querySelector(".accordion-collapse").id = `collapseSeason${length}`;
-                        list[i].querySelector(".add-episode").dataset.season = length;
-                        list[i].querySelector(".number-season").textContent = length + " Сезон";
-                        let episodesLength = list[i].querySelector(".add-episode").dataset.episodesCount;
-                        list[i].querySelectorAll(".list-group-item").forEach(item => {
-                            item.querySelector(".episode-video").setAttribute("name",
-                                `episodes[${length}][${episodesLength}]`)
-                            episodesLength--;
-                        })
-                        length--;
-                    }
+                    $.ajax({
+                        url: '{{ route('core.admin.season.remove') }}',
+                        method: 'post',
+                        data: {
+                            seasonId: $(e.target).data("season-id"),
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(response) {
+                            console.log(response)
+                            e.target.parentElement.parentElement.parentElement.parentElement.remove();
+                            seasonsCount--;
+                            let length = seasonsCount;
+                            list = document.getElementById("seasons-list").children;
+                            for (i = 0; i < list.length; i++) {
+                                list[i].querySelector(".accordion-button").dataset.bsTarget =
+                                    `#collapseSeason${length}`;
+                                list[i].querySelector(".accordion-collapse").id =
+                                    `collapseSeason${length}`;
+                                list[i].querySelector(".add-episode").dataset.season = length;
+                                list[i].querySelector(".number-season").textContent = length + " Сезон";
+                                let episodesLength = list[i].querySelector(".add-episode").dataset
+                                    .episodesCount;
+                                list[i].querySelectorAll(".list-group-item").forEach(item => {
+                                    item.querySelector(".episode-video").setAttribute("name",
+                                        `episodes[${length}][${episodesLength}]`)
+                                    episodesLength--;
+                                })
+                                length--;
+                            }
+                        },
+                        error: function() {
+                            alert("Что то пошло не так! Попробуйте позже")
+                        }
+                    });
+
                 }
             })
         }
@@ -307,14 +414,95 @@
                                         сезон</button>
                                 </div>
                                 <div class="accordion" id="seasons-list">
+                                    @foreach ($content->seasons as $season)
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                                    data-bs-target="#collapseSeason{{ $season->number }}"><span
+                                                        class="number-season">{{ $season->number }} Сезон</span></button>
+                                            </h2>
+                                            <div id="collapseSeason{{ $season->number }}"
+                                                class="accordion-collapse collapse">
+                                                <div class="accordion-body">
+                                                    <div class="d-flex">
+                                                        <button type="button"
+                                                            data-episodes-count="{{ $season->episodes->count() }}"
+                                                            data-season="{{ $season->number }}"
+                                                            data-season-id="{{ $season->id }}"
+                                                            class="btn btn-dark mb-3 add-episode">Добавить серию</button>
 
+                                                        <button type="button"
+                                                            class="btn btn-outline-danger ms-auto mb-3 remove-season"
+                                                            data-season-id="{{ $season->id }}">Удалить сезон</button>
+                                                    </div>
+                                                    <ul class="list-group">
+                                                        @foreach ($season->episodes as $episode)
+                                                            <li class="list-group-item list-group-item-action"
+                                                                aria-current="true">
+                                                                <div class="row gy-4">
+                                                                    <div class="col-md-2">
+                                                                        <div class="h-100 d-flex align-items-center">
+                                                                            <div><span
+                                                                                    class="number">{{ $episode->number }}</span>
+                                                                                Серия</div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-8">
+                                                                        <div>
+                                                                            <div class="upload-container text-center">
+                                                                                @if ($episode->url)
+                                                                                    <button disabled=""
+                                                                                        class="btn btn-sm me-2 btn-dark">Видео
+                                                                                        загружено</button><button
+                                                                                        type="button"
+                                                                                        class="btn btn-sm browseFile btn-outline-danger"
+                                                                                        data-content-id="{{ $content->id }}"
+                                                                                        data-episode-id="{{ $episode->id }}"
+                                                                                        title="Изменить видео">Изменить
+                                                                                        видео</button><a
+                                                                                        href="{{ asset($episode->url) }}"
+                                                                                        class="btn btn-sm ms-2 btn-dark btn-watch"
+                                                                                        target="true">Посмотреть
+                                                                                        видео</a>
+                                                                                @else
+                                                                                    <button type="button"
+                                                                                        class="btn btn-outline-dark btn-sm browseFile"
+                                                                                        data-content-id="{{ $content->id }}"
+                                                                                        data-episode-id="{{ $episode->id }}">Выберите
+                                                                                        файл</button>
+                                                                                @endif
+                                                                            </div>
+                                                                            <div style="display: none"
+                                                                                class="progress mt-3"
+                                                                                style="height: 25px">
+                                                                                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                                                                    role="progressbar" aria-valuenow="75"
+                                                                                    aria-valuemin="0" aria-valuemax="100"
+                                                                                    style="width: 75%; height: 100%">75%
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <div class="d-flex h-100 align-items-center">
+                                                                            <button type="button"
+                                                                                class="btn btn-sm btn-danger ms-auto remove-episode"
+                                                                                data-episode-id="{{ $episode->id }}">Удалить</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-12">
-                            <div class="mb-3 d-flex">
-                                <button class="btn ms-auto btn-danger">Создать контент</button>
-                            </div>
+
                         </div>
                         {{-- 
                         <div class="container pt-4">

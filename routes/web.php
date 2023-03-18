@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\GetControllers\TypeController as AdminTypeViews;
 use App\Http\Controllers\Admin\PostControllers\CategoryController as AdminCategoryCore;
 use App\Http\Controllers\Admin\PostControllers\ContentController as AdminContentCore;
 use App\Http\Controllers\Admin\PostControllers\TypeController as AdminTypeCore;
+use App\Http\Controllers\Admin\PostControllers\VideoController as AdminVideoCore;
 use App\Http\Controllers\GetControllers\SingleController as SingleViews;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\PostControllers\PersonalController as PersonalCore;
@@ -82,6 +83,11 @@ Route::group(['prefix' => 'core', 'namepsace' => 'core'], function () {
 
             Route::post('/{content}/remove', [AdminContentCore::class, 'remove'])->name('core.admin.contents.remove');
         });
+
+        Route::post('/season/create', [AdminVideoCore::class, 'seasonCreate'])->name('core.admin.season.create');
+        Route::post('/season/remove', [AdminVideoCore::class, 'seasonRemove'])->name('core.admin.season.remove');
+        Route::post('/episode/create', [AdminVideoCore::class, 'episodeCreate'])->name('core.admin.episode.create');
+        Route::post('/episode/remove', [AdminVideoCore::class, 'episodeRemove'])->name('core.admin.episode.remove');
 
         Route::group(['prefix' => 'types'], function () {
 
