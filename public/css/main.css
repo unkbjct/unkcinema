@@ -1,0 +1,96 @@
+html,
+body {
+    height: 100%;
+    /* background-color: red; */
+}
+
+.wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 1 auto;
+}
+
+.btn,
+.form-control,
+.card,
+.form-select,
+.accordion-item,
+.accordion,
+.accordion .show,
+.accordion-button,
+.list-group {
+    border-radius: 0px !important;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: var(--bs-dark);
+    color: white;
+}
+
+a {
+    text-decoration: none;
+    color: var(--bs-danger);
+}
+
+.movie-item {
+    border: 0;
+    background-color: var(--bs-dark);
+    cursor: pointer;
+    color: white;
+    position: relative;
+    transition: all .2s;
+}
+
+.movie-item img {
+    z-index: 10;
+}
+
+.movie-information {
+    padding: 20px;
+    transition: all .2s;
+    position: absolute;
+    background-color: var(--bs-danger);
+    bottom: 50%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-weight: 700;
+    translate: 0 100%;
+    z-index: 11;
+    opacity: 0;
+}
+
+.movie-item:hover {
+    /* box-shadow: 0 0 20px rgba(30, 30, 30, .8); */
+}
+
+.movie-item:hover .movie-information {
+    translate: 0 0;
+    /* translate: 0 100%; */
+    opacity: 1;
+    bottom: 0;
+}
+
+.btn-ani-remove {
+    position: relative;
+    transition: all 1s;
+}
+
+.btn-ani-remove::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(30, 30, 30, .3);
+    width: 0;
+}
+
+.btn-ani-remove:active::before {
+    transition: all 1.5s linear;
+    width: 100%;
+}

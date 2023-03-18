@@ -1,0 +1,7 @@
+.attributes-item {
+    background-color: var(--bs-dark);
+    padding: 10px 10px 10px 20px;
+    margin: 0 10px 10px 0;
+    color: white;
+    display: flex;
+}

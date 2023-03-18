@@ -1,0 +1,8 @@
+.categories-item {
+    border: 1px solid var(--bs-dark);
+    padding: 10px 10px 10px 20px;
+    margin: 0 10px 10px 0;
+    /* color: white; */
+    font-size: 15px;
+    display: flex;
+}

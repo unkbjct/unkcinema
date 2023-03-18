@@ -1,0 +1,81 @@
+.card {
+    position: relative;
+    cursor: pointer;
+}
+
+.card .face {
+    width: 300px;
+    height: 200px;
+    transition: 0.5s;
+}
+
+.card .face.face1 {
+    position: relative;
+    background: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    transform: translateY(100px);
+}
+
+.card:hover .face.face1 {
+    background: var(--bs-danger);
+    transform: translateY(0);
+}
+
+.card .face.face1 .content {
+    opacity: 0.2;
+    transition: 0.5s;
+}
+
+.card:hover .face.face1 .content {
+    opacity: 1;
+}
+
+.card .face.face1 .content svg {
+    max-width: 100px;
+    margin: auto;
+    fill: #fff;
+}
+
+.card .face.face1 .content h3 {
+    margin: 10px 0 0;
+    padding: 0;
+    color: #fff;
+    text-align: center;
+    font-size: 1.5em;
+}
+
+.card .face.face2 {
+    position: relative;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+    transform: translateY(-100px);
+}
+
+.card .face.face2.content {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card:hover .face.face2 {
+    transform: translateY(0);
+}
+
+.card .face.face2.content {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card .face.face2 .content p {
+    margin: 0;
+    padding: 0;
+}
