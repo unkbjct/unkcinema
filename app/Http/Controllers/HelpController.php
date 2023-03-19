@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Content;
 use App\Models\Episode;
+use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -33,9 +34,23 @@ class HelpController extends Controller
             $finalPath = storage_path("app/public/contents/" . $contentTitle . "/");
 
             $file->move($finalPath, $fileName);
-            $episode = Episode::find($request->episodeId);
-            $episode->url = "public/storage/contents/" . $contentTitle . "/" . $fileName;
-            $episode->save();
+            if ($request->isVideo == 'true') {
+                $video = Video::where("content", $request->contentId)->first();
+                if ($video) {
+                    $video->url = "public/storage/contents/" . $contentTitle . "/" . $fileName;
+                    $video->save();
+                } else {
+                    $video = new Video();
+                    $video->content = $request->contentId;
+                    $video->url = "public/storage/contents/" . $contentTitle . "/" . $fileName;
+                    $video->save();
+                }
+            } else {
+                Log::debug($request->isVideo);
+                $episode = Episode::find($request->episodeId);
+                $episode->url = "public/storage/contents/" . $contentTitle . "/" . $fileName;
+                $episode->save();
+            }
 
             // if (file_exists($file->getPathname())) unlink($file->getPathname());
             return [

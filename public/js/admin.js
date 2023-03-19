@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', function () { // Аналог $(do
             btn.addEventListener("mouseup", function (event) {
                 let differance = Date.now() - startTime;
                 if (differance > 1500) {
-                    document.getElementById("form-remove-" + this.dataset.id).submit();
+                    if (document.getElementById("form-remove-" + this.dataset.id))
+                        document.getElementById("form-remove-" + this.dataset.id).submit();
                 }
             })
 

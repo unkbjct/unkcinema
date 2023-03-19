@@ -92,102 +92,20 @@
         </div>
         <div class="mt-4">
             <div class="row gy-4">
-                <div class="col-lg-2">
-                    <div class="card movie-item">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZjRjOTFkOTktZWUzMi00YzMyLThkMmYtMjEwNmQyNzliYTNmXkEyXkFqcGdeQXVyNzQ1ODk3MTQ@._V1_.jpg"
-                            alt="">
-                        <div class="movie-information">
-                            Рик и Морти
-                        </div>
+                @forelse ($contentsList as $content)
+                    <div class="col-lg-2">
+                        <a href="{{ route('content', ['content' => $content->id]) }}">
+                            <div class="card movie-item">
+                                <img src="{{ asset($content->image) }}" alt="">
+                                <div class="movie-information">
+                                    {{ $content->title_rus }}
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="card movie-item">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZjRjOTFkOTktZWUzMi00YzMyLThkMmYtMjEwNmQyNzliYTNmXkEyXkFqcGdeQXVyNzQ1ODk3MTQ@._V1_.jpg"
-                            alt="">
-                        <div class="movie-information">
-                            Рик и Морти
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="card movie-item">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZjRjOTFkOTktZWUzMi00YzMyLThkMmYtMjEwNmQyNzliYTNmXkEyXkFqcGdeQXVyNzQ1ODk3MTQ@._V1_.jpg"
-                            alt="">
-                        <div class="movie-information">
-                            Рик и Морти
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="card movie-item">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZjRjOTFkOTktZWUzMi00YzMyLThkMmYtMjEwNmQyNzliYTNmXkEyXkFqcGdeQXVyNzQ1ODk3MTQ@._V1_.jpg"
-                            alt="">
-                        <div class="movie-information">
-                            Рик и Морти
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="card movie-item">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZjRjOTFkOTktZWUzMi00YzMyLThkMmYtMjEwNmQyNzliYTNmXkEyXkFqcGdeQXVyNzQ1ODk3MTQ@._V1_.jpg"
-                            alt="">
-                        <div class="movie-information">
-                            Рик и Морти
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="card movie-item">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZjRjOTFkOTktZWUzMi00YzMyLThkMmYtMjEwNmQyNzliYTNmXkEyXkFqcGdeQXVyNzQ1ODk3MTQ@._V1_.jpg"
-                            alt="">
-                        <div class="movie-information">
-                            Рик и Морти
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="card movie-item">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZjRjOTFkOTktZWUzMi00YzMyLThkMmYtMjEwNmQyNzliYTNmXkEyXkFqcGdeQXVyNzQ1ODk3MTQ@._V1_.jpg"
-                            alt="">
-                        <div class="movie-information">
-                            Рик и Морти
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="card movie-item">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZjRjOTFkOTktZWUzMi00YzMyLThkMmYtMjEwNmQyNzliYTNmXkEyXkFqcGdeQXVyNzQ1ODk3MTQ@._V1_.jpg"
-                            alt="">
-                        <div class="movie-information">
-                            Рик и Морти
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="card movie-item">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZjRjOTFkOTktZWUzMi00YzMyLThkMmYtMjEwNmQyNzliYTNmXkEyXkFqcGdeQXVyNzQ1ODk3MTQ@._V1_.jpg"
-                            alt="">
-                        <div class="movie-information">
-                            Рик и Морти
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="card movie-item">
-                        <img src="https://m.media-amazon.com/images/M/MV5BMjJiYjdjNWEtODNiMS00MTBiLWE4NTAtNGNjMDgxZWQzMTgyXkEyXkFqcGdeQXVyMTA3MDk2NDg2._V1_.jpg"
-                            alt="">
-                        <div class="movie-information">
-                            Никто
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="card card-body">asd</div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="card card-body">asd</div>
-                </div>
+                @empty
+                @endforelse
+
             </div>
         </div>
     </div>

@@ -11,6 +11,7 @@ use App\Models\Content_category;
 use App\Models\Episode;
 use App\Models\Season;
 use App\Models\Type;
+use App\Models\Video;
 use Illuminate\Http\Request;
 
 class ContentController extends Controller
@@ -52,7 +53,7 @@ class ContentController extends Controller
             ->select("attributes.name as name", "attributes.id as id", "content_attributes.value as value")
             ->get();
         if ($content->type->is_one_video) {
-            // $content->video = 
+            $content->video = Video::where("content", $content->id)->first();
         } else {
             $content->seasons = Season::where("content", $content->id)->orderByDesc('id')->get();
             $content->seasons->transform(function ($season) {

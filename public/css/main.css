@@ -22,7 +22,8 @@ main {
 .accordion,
 .accordion .show,
 .accordion-button,
-.list-group {
+.list-group,
+.dropdown-menu {
     border-radius: 0px !important;
 }
 
@@ -77,7 +78,7 @@ a {
 
 .btn-ani-remove {
     position: relative;
-    transition: all 1s;
+    /* transition: all 1s; */
 }
 
 .btn-ani-remove::before {
@@ -91,6 +92,6 @@ a {
 }
 
 .btn-ani-remove:active::before {
-    transition: all 1.5s linear;
+    transition: width 1.5s linear;
     width: 100%;
 }

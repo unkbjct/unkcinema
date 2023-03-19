@@ -25,15 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll(".attributes-item").forEach(item => {
                 item.remove();
             })
-            if (document.querySelector(".change-frame")) {
-                if ((Boolean)((Number)(this.options[this.selectedIndex].dataset.isOneVideo))) {
-                    document.getElementById("is-one-video-0").classList.add("visually-hidden")
-                } else {
-                    document.getElementById("is-one-video-1").classList.add("visually-hidden")
-                }
-                if (this.options[this.selectedIndex].dataset.isOneVideo)
-                    document.getElementById("is-one-video-" + this.options[this.selectedIndex].dataset.isOneVideo).classList.remove("visually-hidden")
-            }
+            
 
             if (!this.options[this.selectedIndex].dataset.attributes) return;
             let attributes = JSON.parse(this.options[this.selectedIndex].dataset.attributes);

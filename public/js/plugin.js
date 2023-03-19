@@ -3,9 +3,7 @@
 class newVideo {
     // video = this.video;
 
-
     constructor() {
-
         this.svg = {
             setting: new svg("0 0 24 24", [
                 "M22.2,14.4L21,13.7c-1.3-0.8-1.3-2.7,0-3.5l1.2-0.7c1-0.6,1.3-1.8,0.7-2.7l-1-1.7c-0.6-1-1.8-1.3-2.7-0.7   L18,5.1c-1.3,0.8-3-0.2-3-1.7V2c0-1.1-0.9-2-2-2h-2C9.9,0,9,0.9,9,2v1.3c0,1.5-1.7,2.5-3,1.7L4.8,4.4c-1-0.6-2.2-0.2-2.7,0.7   l-1,1.7C0.6,7.8,0.9,9,1.8,9.6L3,10.3C4.3,11,4.3,13,3,13.7l-1.2,0.7c-1,0.6-1.3,1.8-0.7,2.7l1,1.7c0.6,1,1.8,1.3,2.7,0.7L6,18.9   c1.3-0.8,3,0.2,3,1.7V22c0,1.1,0.9,2,2,2h2c1.1,0,2-0.9,2-2v-1.3c0-1.5,1.7-2.5,3-1.7l1.2,0.7c1,0.6,2.2,0.2,2.7-0.7l1-1.7   C23.4,16.2,23.1,15,22.2,14.4z M12,16c-2.2,0-4-1.8-4-4c0-2.2,1.8-4,4-4s4,1.8,4,4C16,14.2,14.2,16,12,16z"
@@ -40,9 +38,12 @@ class newVideo {
 
         let checkFullScreenMode = false;
         let videoIsFocus = false;
+        let isHidden = false;
 
         // CONTAINER 
         this.container = document.getElementById("video-container");
+        this.isSerial = ((Boolean)(this.container.dataset.isSerial))
+
         //creating video
         this.video = document.createElement("video");
         this.video.setAttribute("id", "video")
@@ -54,6 +55,54 @@ class newVideo {
         this.controlsContainer.setAttribute("id", "controls-container")
         this.container.append(this.controlsContainer)
 
+        // if content is serial
+        if (this.isSerial) {
+            // json list seasons
+            this.jsonSeasons = JSON.parse(this.container.dataset.seasons)
+            //modal
+            this.serialModal = document.createElement("div");
+            this.serialModal.classList.add("serial-modal");
+            this.controlsContainer.append(this.serialModal);
+
+            //current season and episode
+            let thisEpisode = document.createElement("div");
+            thisEpisode.classList.add("this-episode");
+            thisEpisode.classList.add("video-modal-btn");
+            thisEpisode.textContent = `${1} Сезон ${1} Серия`;
+            this.serialModal.append(thisEpisode)
+
+            // seasons list
+            let seasonsList = document.createElement("div");
+            seasonsList.classList.add("video-modal-list");
+            seasonsList.classList.add("seasons-list");
+            this.serialModal.append(seasonsList);
+
+            this.jsonSeasons.forEach(season => {
+                //season item
+                let seasonsItem = document.createElement("div");
+                seasonsItem.classList.add("seasons-item");
+                seasonsList.append(seasonsItem)
+
+                let videoModalItem = document.createElement("div");
+                videoModalItem.classList.add("video-modal-item");
+                videoModalItem.classList.add("video-modal-btn");
+                videoModalItem.textContent = `${season.number} Сезон`
+                seasonsItem.append(videoModalItem)
+
+                let episodesList = document.createElement("div");
+                episodesList.classList.add("video-modal-list")
+                episodesList.classList.add("episodes-list")
+                seasonsItem.append(episodesList);
+
+                season.episodes.forEach(episode => {
+                    let videoModalItem = document.createElement("div");
+                    videoModalItem.classList.add("video-modal-item");
+                    videoModalItem.classList.add("video-modal-btn");
+                    videoModalItem.textContent = `${episode.number} Серия`
+                    episodesList.append(videoModalItem)
+                })
+            });
+        }
 
         //creating controls shadows 
         this.controlsShadow = document.createElement("div")
@@ -195,12 +244,15 @@ class newVideo {
         }.bind(this));
 
         this.controlsContainer.addEventListener("click", function (e) {
-            if (e.composedPath().includes(this.controls)) return;
+            showControls(this);
+            if (e.composedPath().includes(this.controls)
+                || e.composedPath().includes(this.serialModal)) return;
             togglePlayback(this.video);
         }.bind(this))
 
         this.controlsContainer.addEventListener("dblclick", function (e) {
-            if (e.composedPath().includes(this.controls)) return;
+            if (e.composedPath().includes(this.controls)
+                || e.composedPath().includes(this.serialModal)) return;
             toggleScreenmode(this);
         }.bind(this))
 
@@ -215,18 +267,12 @@ class newVideo {
         setInterval(updateTick.bind(null, this), 1000);
 
         this.container.addEventListener("mousemove", (e) => {
-            this.controls.classList.remove("hidden");
-            now_no_active = 0;
-            this.container.style.cursor = "default";
-            this.controlsShadow.classList.remove("hidden")
+            if (isHidden) showControls(this);
         })
 
         function updateTick(all) {
-            if (now_no_active >= no_active_delay) {
-                all.controls.classList.add("hidden");
-                all.container.style.cursor = "none";
-                all.controlsShadow.classList.add("hidden")
-                return;
+            if (!isHidden && now_no_active >= no_active_delay) {
+                hideControls(all);
             }
         }
 
@@ -265,6 +311,23 @@ class newVideo {
                 }
             };
         }.bind(this))
+
+        function showControls(all) {
+            if (all.isSerial) all.serialModal.classList.remove("hidden");
+            all.controls.classList.remove("hidden");
+            now_no_active = 0;
+            all.container.style.cursor = "default";
+            all.controlsShadow.classList.remove("hidden")
+            isHidden = false;
+        }
+
+        function hideControls(all) {
+            if (all.isSerial) all.serialModal.classList.add("hidden");
+            all.controls.classList.add("hidden");
+            all.container.style.cursor = "none";
+            all.controlsShadow.classList.add("hidden")
+            isHidden = true;
+        }
 
         function toggleSvg(newSvg, element) {
             element.innerHTML = '';
@@ -322,9 +385,12 @@ class newVideo {
             }
             all.video.muted = !all.video.muted;
         }
-
+        this.video.setAttribute("muted", "true");
+        // togglePlayback(this.video);
     }
 }
+
+
 
 class button {
     constructor(id, parent, svg) {
@@ -388,3 +454,8 @@ Number.prototype.lead0 = function (n) {
     }
     return nz;
 };
+
+function getParameter(name) {
+    if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
+        return decodeURIComponent(name[1]);
+}
