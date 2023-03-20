@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\PostControllers\VideoController as AdminVideoCore
 use App\Http\Controllers\GetControllers\SingleController as SingleViews;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\PostControllers\PersonalController as PersonalCore;
+use App\Http\Controllers\PostControllers\SingleController as SingleCore;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -72,6 +73,8 @@ Route::group(['prefix' => 'core', 'namepsace' => 'core'], function () {
     Route::post('/personal/login', [PersonalCore::class, 'login'])->name('core.personal.login');
 
     Route::get('/personal/logout', [PersonalCore::class, 'logout'])->name('core.personal.logout');
+
+    Route::post('/content/{content}/comment', [SingleCore::class, 'commentCreate'])->name('core.content.comment.create');
 
     Route::group(['prefix' => 'admin'], function () {
 

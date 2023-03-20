@@ -263,7 +263,7 @@ class newVideo {
         this.volumeBtn.btn.addEventListener("click", toggleVolume.bind(null, this))
 
         this.video.addEventListener("canplay", function () {
-            this.duration.innerHTML = formatTime(video.duration, controls.hasHours);
+            this.duration.innerHTML = formatTime(this.video.duration, (this.video.duration > 3600) ? true : false);
             this.currentTime.innerHTML = formatTime(0);
         }.bind(this))
 
@@ -275,7 +275,7 @@ class newVideo {
         this.video.addEventListener("timeupdate", function () {
             let progress = Math.floor(this.video.currentTime) / Math.floor(this.video.duration);
             this.currentProgress.style.width = Math.floor(progress * this.progressBar.offsetWidth) + "px";
-            this.currentTime.innerHTML = formatTime(video.currentTime);
+            this.currentTime.innerHTML = formatTime(this.video.currentTime, (this.video.currentTime > 3600) ? true : false);
             if (this.isSerial && this.episode.start_opening) {
                 if (this.isSkiped
                     && this.video.currentTime > this.episode.start_opening

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\GetControllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Comment;
 use App\Models\Content;
 use App\Models\Episode;
 use App\Models\Season;
 use App\Models\Type;
+use App\Models\User;
 use App\Models\Video;
 use Illuminate\Http\Request;
 
@@ -79,8 +81,25 @@ class SingleController extends Controller
             }
         }
 
+        $comments = Comment::where("content", $content->id)->orderByDesc('id')->get();
+
+        // Изменяем коллекцию.
+        $comments->transform(function ($comment) use ($comments) {
+            // Добавляем к каждому комментарию дочерние комментарии.
+            $comment->children = $comments->where('parent_id', $comment->id);
+            $comment->user = User::find($comment->user);
+            if ($comment->parent_id) $comment->setAttribute('parent_user', User::find(Comment::find($comment->parent_id)->user));
+            return $comment;
+        });
+
+        // Удаляем из коллекции комментарии у которых есть родители.
+        $comments = $comments->reject(function ($comment) {
+            return $comment->parent_id !== null;
+        });
+
         return view('content', [
             'content' => $content,
+            'comments' => $comments,
         ]);
     }
 
