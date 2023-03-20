@@ -2,6 +2,10 @@
     box-sizing: border-box;
 }
 
+:root {
+    --custom-animation-width: 0;
+}
+
 #video-container {
     position: relative;
 }
@@ -218,7 +222,7 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    
+
 }
 
 .seasons-item {
@@ -260,4 +264,44 @@
 .video-modal-btn:hover {
     background-color: rgba(200, 200, 200, .2);
     cursor: pointer;
+}
+
+.opening-btns {
+    position: absolute;
+    bottom: 100px;
+    left: 10px;
+    display: flex;
+}
+
+.opening-btns .btn {
+    box-shadow: 0 0 15px rgba(30, 30, 30, .3);
+}
+
+.animation-container {
+    position: relative;
+}
+
+.animation-fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    transition: width 3s linear;
+    width: 0;
+    background-color: rgba(150, 150, 150, .4);
+}
+
+.opening-btns:is(.hidden) {
+    display: none;
+}
+
+.next-episode:is(.hidden) {
+    display: none;
+}
+
+.next-episode {
+    position: absolute;
+    right: 50px;
+    bottom: 100px;
+    box-shadow: 0 0 15px rgba(30, 30, 30, .3);
 }

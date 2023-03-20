@@ -99,7 +99,9 @@
                 </div>
             @else
                 <div data-src="{{ asset($content->thisEpisode->url) }}" data-seasons="{{ $content->seasons }}"
-                    data-is-serial="0" id="video-container" class="mb-5">
+                    data-is-serial="0" data-this-season="{{ $content->thisSeason }}"
+                    data-this-episode="{{ $content->thisEpisode }}" data-next-episode="{{ $content->nextEpisode }}"
+                    id="video-container" class="mb-5">
                 </div>
                 <div class="btn-group">
                     <button class="btn btn-dark">da</button>
@@ -108,6 +110,6 @@
                 </div>
             @endif
         </section>
-        
+
     </div>
 @endsection

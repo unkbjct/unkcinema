@@ -88,6 +88,8 @@ Route::group(['prefix' => 'core', 'namepsace' => 'core'], function () {
         Route::post('/season/remove', [AdminVideoCore::class, 'seasonRemove'])->name('core.admin.season.remove');
         Route::post('/episode/create', [AdminVideoCore::class, 'episodeCreate'])->name('core.admin.episode.create');
         Route::post('/episode/remove', [AdminVideoCore::class, 'episodeRemove'])->name('core.admin.episode.remove');
+        Route::post('/episode/remove', [AdminVideoCore::class, 'episodeRemove'])->name('core.admin.episode.remove');
+        Route::post('/episode/edit', [AdminVideoCore::class, 'episodeEdit'])->name('core.admin.episode.edit');
 
         Route::group(['prefix' => 'types'], function () {
 

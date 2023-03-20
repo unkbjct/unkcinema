@@ -13,6 +13,27 @@
 
 @section('scripts')
     <script type="text/javascript">
+        $(".edit-episode").on("change", function() {
+            let name = $(this).attr("name");
+                $.ajax({
+                    url: '{{ route('core.admin.episode.edit') }}',
+                    method: 'post',
+                    data: {
+                        episodeId: $(this).data("episode-id"),
+                        _token: '{{ csrf_token() }}',
+                        startOpening: $(this).parent().parent().find(".startOpening").val(),
+                        endOpening: $(this).parent().parent().find(".endOpening").val(),
+                        startFinish: $(this).parent().parent().find(".startFinish").val(),
+                    },
+                    success: function(id) {
+                        console.log(id)
+                    },
+                    error: function() {
+                        alert("Что то пошло не так! Попробуйте позже")
+                    }
+                });
+        })
+
         function enableUpload(element) {
             let browseFile = $(element.querySelector(".browseFile"));
             let progress = $(element.querySelector(".progress"));
@@ -203,8 +224,9 @@
                                 `<button type="button" class="btn btn-sm btn-danger ms-auto remove-episode btn-ani-remove" data-episode-id="${id}">Удалить</button>` +
                                 '</div>' +
                                 '</div>' +
-                                '</div>' +
-                                '</li>'
+                                '<div class="col-md-12 text-muted">Для изменения начала/конца концовки обновите страницу</div>'
+                            '</div>' +
+                            '</li>'
                             element = $(element)[0]
                             console.log(btn.parentElement)
                             $(btn).parent().next().prepend(element)
@@ -235,7 +257,7 @@
                                 btnAdd = $(btn).parent().parent().parent().parent().parent().prev()
                                     .children()[0]
                                 btn.parentElement.parentElement.parentElement.parentElement.remove();
-    
+
                                 btnAdd.dataset.episodesCount = list.length;
                                 let length = list.length;
                                 for (i = 0; i < list.length; i++) {
@@ -261,7 +283,8 @@
                             },
                             success: function(response) {
                                 console.log(response)
-                                e.target.parentElement.parentElement.parentElement.parentElement.remove();
+                                e.target.parentElement.parentElement.parentElement.parentElement
+                                    .remove();
                                 seasonsCount--;
                                 let length = seasonsCount;
                                 list = document.getElementById("seasons-list").children;
@@ -271,11 +294,13 @@
                                     list[i].querySelector(".accordion-collapse").id =
                                         `collapseSeason${length}`;
                                     list[i].querySelector(".add-episode").dataset.season = length;
-                                    list[i].querySelector(".number-season").textContent = length + " Сезон";
+                                    list[i].querySelector(".number-season").textContent = length +
+                                        " Сезон";
                                     let episodesLength = list[i].querySelector(".add-episode").dataset
                                         .episodesCount;
                                     list[i].querySelectorAll(".list-group-item").forEach(item => {
-                                        item.querySelector(".episode-video").setAttribute("name",
+                                        item.querySelector(".episode-video").setAttribute(
+                                            "name",
                                             `episodes[${length}][${episodesLength}]`)
                                         episodesLength--;
                                     })
@@ -318,9 +343,10 @@
                         <div class="col-lg-12">
                             <div class="mb-3">
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" name="published" type="checkbox" @if($content->published) checked @endif id="published">
+                                    <input class="form-check-input" name="published" type="checkbox"
+                                        @if ($content->published) checked @endif id="published">
                                     <label class="form-check-label" for="published">Видео опубликовано</label>
-                                  </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-lg-6">
@@ -507,7 +533,7 @@
                                                         @foreach ($season->episodes as $episode)
                                                             <li class="list-group-item list-group-item-action"
                                                                 aria-current="true">
-                                                                <div class="row gy-4">
+                                                                <div class="row gy-3">
                                                                     <div class="col-md-2">
                                                                         <div class="h-100 d-flex align-items-center">
                                                                             <div><span
@@ -515,6 +541,7 @@
                                                                                 Серия</div>
                                                                         </div>
                                                                     </div>
+                                                                    {{-- <div class="col-md-2"></div> --}}
                                                                     <div class="col-md-8">
                                                                         <div>
                                                                             <div class="upload-container text-center">
@@ -558,6 +585,39 @@
                                                                             <button type="button"
                                                                                 class="btn btn-sm btn-danger ms-auto remove-episode btn-ani-remove"
                                                                                 data-episode-id="{{ $episode->id }}">Удалить</button>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div>
+                                                                            <input type="number"
+                                                                                value="{{ $episode->start_opening }}"
+                                                                                name="startOpening"
+                                                                                placeholder="Начало заставки, в секундах"
+                                                                                data-season-id="{{ $episode->season }}"
+                                                                                data-episode-id="{{ $episode->id }}"
+                                                                                class="startOpening edit-episode form-control form-control-sm">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div>
+                                                                            <input type="number"
+                                                                                value="{{ $episode->end_opening }}"
+                                                                                name="endOpening"
+                                                                                placeholder="Конец заставки, в секундах"
+                                                                                data-season-id="{{ $episode->season }}"
+                                                                                data-episode-id="{{ $episode->id }}"
+                                                                                class="endOpening edit-episode form-control form-control-sm">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div>
+                                                                            <input type="number"
+                                                                                value="{{ $episode->start_finish }}"
+                                                                                name="startFinish"
+                                                                                placeholder="Начало концовки, в секундах"
+                                                                                data-season-id="{{ $episode->season }}"
+                                                                                data-episode-id="{{ $episode->id }}"
+                                                                                class="startFinish edit-episode form-control form-control-sm">
                                                                         </div>
                                                                     </div>
                                                                 </div>

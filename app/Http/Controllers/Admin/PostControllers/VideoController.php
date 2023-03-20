@@ -58,5 +58,16 @@ class VideoController extends Controller
         }
         return 'succescs';
     }
+
+    public function episodeEdit( Request $request)
+    {
+        $episode = Episode::find($request->episodeId);
+        if($request->startOpening) $episode->start_opening = $request->startOpening;
+        if($request->endOpening) $episode->end_opening = $request->endOpening;
+        if($request->startFinish) $episode->start_finish = $request->startFinish;
+        $episode->save();
+        return 123;
+        # code...
+    }
     //
 }

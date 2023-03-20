@@ -27,7 +27,7 @@ class SingleController extends Controller
         ]);
     }
 
-    public function content(Content $content)
+    public function content(Request $request, Content $content)
     {
         $content->type = Type::find($content->type);
         if ($content->type->is_one_video) {
@@ -40,8 +40,43 @@ class SingleController extends Controller
                     return $item;
                 });
             }
-            $content->thisSeason = Season::where("content", $content->id)->first();
-            $content->thisEpisode = Episode::where("season", $content->thisSeason->id)->first();
+            if ($request->has('season')) {
+                $content->thisSeason = Season::where("content", $content->id)
+                    ->where("number", $request->season)
+                    ->first();
+                if (!$content->thisSeason) {
+                    return redirect()->route('content', [
+                        'content' => $content->id,
+                    ]);
+                }
+            } else {
+                $content->thisSeason = Season::where("content", $content->id)->first();
+            }
+            if ($request->has('episode')) {
+                $content->thisEpisode = Episode::where("season", $content->thisSeason->id)
+                    ->where("number", $request->episode)
+                    ->first();
+                if (!$content->thisEpisode) {
+                    return redirect()->route('content', [
+                        'content' => $content->id,
+                    ]);
+                }
+            } else {
+                $content->thisEpisode = Episode::where("season", $content->thisSeason->id)->first();
+            }
+
+            if (Episode::where("season", $content->thisSeason->id)->where("number", $content->thisEpisode->number + 1)->first()) {
+                $content->nextEpisode = (Episode::where("season", $content->thisSeason->id)->where("number", $content->thisEpisode->number + 1)->first());
+            } else {
+                if (Season::where("content", $content->id)->where("number", $content->thisSeason->number + 1)->first()) {
+                    $content->nextEpisode = Episode::where("season", Season::where("content", $content->id)->where("number", $content->thisSeason->number + 1)->first()->id)->first();
+                } else {
+                    $content->nextEpisode = null;
+                }
+            }
+            if ($content->nextEpisode) {
+                $content->nextEpisode->seasonNumber = Season::find($content->nextEpisode->season)->number;
+            }
         }
 
         return view('content', [

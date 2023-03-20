@@ -57,6 +57,70 @@ class newVideo {
 
         // if content is serial
         if (this.isSerial) {
+            this.episode = JSON.parse(this.container.dataset.thisEpisode)
+
+            //skip opening
+            if (this.episode.start_opening) {
+                this.isSkiped = true;
+                this.openingBtns = document.createElement("div");
+                this.openingBtns.classList.add("opening-btns");
+                this.openingBtns.classList.add("hidden");
+                this.controlsContainer.append(this.openingBtns);
+
+
+                let btnHide = document.createElement("button");
+                btnHide.classList.add("btn");
+                btnHide.classList.add("btn-dark");
+                btnHide.classList.add("btn-sm");
+                btnHide.textContent = "Смотреть заставку";
+                btnHide.addEventListener("click", function () {
+                    this.openingBtns.classList.add("hidden")
+                    this.isSkiped = false;
+                    document.cookie = "isSkiped=false";
+                }.bind(this))
+                this.openingBtns.append(btnHide)
+
+                this.btnSkipContainer = document.createElement("div");
+                this.btnSkipContainer.classList.add("animation-container");
+                this.btnSkipContainer.classList.add("ms-3");
+
+                this.openingBtns.append(this.btnSkipContainer);
+
+
+                this.btnSkip = document.createElement("button");
+                this.btnSkip.classList.add("btn");
+                this.btnSkip.classList.add("btn-dark");
+                this.btnSkip.classList.add("btn-sm");
+                this.btnSkip.classList.add("btn-ani");
+                this.btnSkip.textContent = "Пропустить заставку";
+                this.btnSkip.addEventListener("click", function () {
+                    this.openingBtns.classList.add("hidden")
+                    this.video.currentTime = this.episode.end_opening;
+                    document.cookie = "isSkiped=true";
+                }.bind(this))
+                this.btnSkipContainer.append(this.btnSkip)
+
+
+                this.btnSkipFill = document.createElement("div");
+                this.btnSkipFill.classList.add("animation-fill");
+                this.btnSkipContainer.append(this.btnSkipFill);
+            }
+
+            if (this.episode.start_finish && this.container.dataset.nextEpisode) {
+                // alert(123)
+                this.nextEpisodeBtn = document.createElement("button");
+                this.nextEpisodeBtn.classList.add("btn")
+                this.nextEpisodeBtn.classList.add("next-episode")
+                this.nextEpisodeBtn.classList.add("btn-dark")
+                this.nextEpisodeBtn.classList.add("btn-sm")
+                this.nextEpisodeBtn.classList.add("hidden")
+                this.nextEpisodeBtn.textContent = "Следующая серия";
+                this.nextEpisodeBtn.addEventListener("click", function () {
+                    window.location.search = `?season=${JSON.parse(this.container.dataset.nextEpisode).seasonNumber}&episode=${JSON.parse(this.container.dataset.nextEpisode).number}`
+                }.bind(this))
+                this.controlsContainer.append(this.nextEpisodeBtn)
+            }
+
             // json list seasons
             this.jsonSeasons = JSON.parse(this.container.dataset.seasons)
             //modal
@@ -68,7 +132,7 @@ class newVideo {
             let thisEpisode = document.createElement("div");
             thisEpisode.classList.add("this-episode");
             thisEpisode.classList.add("video-modal-btn");
-            thisEpisode.textContent = `${1} Сезон ${1} Серия`;
+            thisEpisode.textContent = `${JSON.parse(this.container.dataset.thisSeason).number} Сезон ${this.episode.number} Серия`;
             this.serialModal.append(thisEpisode)
 
             // seasons list
@@ -95,10 +159,18 @@ class newVideo {
                 seasonsItem.append(episodesList);
 
                 season.episodes.forEach(episode => {
+                    // let link = document.createElement("a");
+                    // link.addEventListener("click")
+                    // episodesList.append(link)
+
                     let videoModalItem = document.createElement("div");
                     videoModalItem.classList.add("video-modal-item");
                     videoModalItem.classList.add("video-modal-btn");
                     videoModalItem.textContent = `${episode.number} Серия`
+                    videoModalItem.addEventListener("click", function () {
+                        window.location.search = `?episode=${episode.number}&season=${season.number}`
+                    })
+                    // link.append(videoModalItem)
                     episodesList.append(videoModalItem)
                 })
             });
@@ -204,6 +276,43 @@ class newVideo {
             let progress = Math.floor(this.video.currentTime) / Math.floor(this.video.duration);
             this.currentProgress.style.width = Math.floor(progress * this.progressBar.offsetWidth) + "px";
             this.currentTime.innerHTML = formatTime(video.currentTime);
+            if (this.isSerial && this.episode.start_opening) {
+                if (this.isSkiped
+                    && this.video.currentTime > this.episode.start_opening
+                    && this.video.currentTime < this.episode.end_opening) {
+                    this.openingBtns.classList.remove("hidden")
+                    this.isSkiped = false;
+                    // console.log(123)
+
+                    let userIsSkiped = getCookie('isSkiped');
+                    if (userIsSkiped == 'true') {
+                        this.btnSkipFill.animate({
+                            width: '100%'
+                        }, {
+                            duration: 3000,
+                            iterations: 1,
+                        }).finished.then(() => {
+                            if (getCookie('isSkiped') == 'true') {
+                                this.isSkiped = true;
+                                this.openingBtns.classList.add("hidden");
+                                this.video.currentTime = this.episode.end_opening;
+                            }
+                        })
+                        console.log(this.btnSkip)
+                    }
+
+                } else if (!this.isSkiped && (this.video.currentTime < this.episode.start_opening || this.video.currentTime > this.episode.end_opening)) {
+                    this.openingBtns.classList.add("hidden");
+                    this.isSkiped = true;
+                }
+                if (this.container.dataset.nextEpisode
+                    && this.episode.start_finish
+                    && this.video.currentTime > this.episode.start_finish) {
+                    this.nextEpisodeBtn.classList.remove("hidden");
+                } else {
+                    this.nextEpisodeBtn.classList.add("hidden");
+                }
+            }
         }.bind(this), false)
 
         this.progressBar.addEventListener("click", function (e) {
@@ -244,9 +353,11 @@ class newVideo {
         }.bind(this));
 
         this.controlsContainer.addEventListener("click", function (e) {
+            this.btnHide
             showControls(this);
             if (e.composedPath().includes(this.controls)
-                || e.composedPath().includes(this.serialModal)) return;
+                || e.composedPath().includes(this.serialModal)
+                || e.composedPath().includes(this.openingBtns)) return;
             togglePlayback(this.video);
         }.bind(this))
 
@@ -458,4 +569,11 @@ Number.prototype.lead0 = function (n) {
 function getParameter(name) {
     if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
         return decodeURIComponent(name[1]);
+}
+
+function getCookie(name) {
+    let matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
 }
