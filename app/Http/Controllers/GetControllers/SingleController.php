@@ -5,6 +5,8 @@ namespace App\Http\Controllers\GetControllers;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Content;
+use App\Models\Content_attribute;
+use App\Models\Content_category;
 use App\Models\Episode;
 use App\Models\Season;
 use App\Models\Type;
@@ -96,6 +98,16 @@ class SingleController extends Controller
         $comments = $comments->reject(function ($comment) {
             return $comment->parent_id !== null;
         });
+
+        $content->attributes = Content_attribute::where("content", $content->id)
+            ->join("attributes", "Content_attributes.attribute", "=", "attributes.id")
+            ->select("Content_attributes.value as value", "attributes.name as name")
+            ->get();
+
+        $content->categories = Content_category::where("content", $content->id)
+            ->join("Categories", "Content_categories.category", "=", "categories.id")
+            ->select("categories.title")
+            ->get();
 
         return view('content', [
             'content' => $content,
