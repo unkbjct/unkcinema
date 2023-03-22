@@ -43,9 +43,8 @@
                                 <a class="nav-link" href="#">Уведомления</a>
                             </li>
                         </ul>
-                        <form class="d-flex me-auto" role="search">
-                            <input class="form-control border-end-0" type="search" placeholder="Поиск"
-                                aria-label="Search">
+                        <form class="d-flex me-auto" action="{{ route('search') }}" role="search">
+                            <input class="form-control border-end-0" type="search" placeholder="Поиск" name="title">
                             <button class="btn btn-outline-light" type="submit">Найти</button>
                         </form>
                         <ul class="navbar-nav me-5 mb-2 mb-lg-0">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\GetControllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Content;
 use App\Models\Content_attribute;
@@ -21,13 +22,47 @@ class SingleController extends Controller
         return view('welcome');
     }
 
-    public function search()
+    public function search(Request $request)
     {
-        $contentsList = Content::where("published", 1)
-            ->get();
-        // dd($contentsList);
+        $request->flash();
+
+        $typesList = Type::orderByDesc("id")->get();
+        $categoriesList = Category::orderByDesc("id")->get();
+
+        $contentsList = Content::where("contents.published", 1)
+            ->orderByDesc("contents.id");
+
+        if ($request->has('title') && $request->title) $contentsList->where("title_rus", "LIKE", "%{$request->title}%");
+        if ($request->has('types') && $request->types) $contentsList->whereIn("type",  $request->types);
+        if ($request->has('categories') && $request->categories) {
+            $categoriesArray = Content_category::whereIn("category", $request->categories)->select("content")->distinct()->get();
+            $tmpArray = [];
+            foreach ($categoriesArray as $contentId) {
+                array_push($tmpArray, $contentId->content);
+            }
+            $contentsList->whereIn("contents.id", $tmpArray);
+        }
+        if ($request->has('add') && $request->add) {
+            $adds = $request->add;
+            $tmpQuery = Content_attribute::where(function ($query) use ($adds) {
+                foreach ($adds as $addItem) {
+                    $query->orwhere('value', 'like',  "{$addItem}");
+                }
+            })->select('content')->distinct()->get();
+            $tmpArray = [];
+            foreach ($tmpQuery as $contentId) {
+                array_push($tmpArray, $contentId->content);
+            }
+            if ($tmpArray) $contentsList->whereIn("contents.id", $tmpArray);
+        }
+
+
+        $contentsList = $contentsList->get();
+
         return view('search', [
             'contentsList' => $contentsList,
+            'typesList' => $typesList,
+            'categoriesList' => $categoriesList,
         ]);
     }
 

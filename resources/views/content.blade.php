@@ -26,7 +26,7 @@
                         <div class="col-md-9">
                             <div>
                                 <div class="display-2 mb-3">{{ $content->title_rus }}</div>
-                                <div class="mb-3 fw-semibold">{{ $content->type->title }}</div>
+                                <div class="mb-3 fw-semibold">{{ $content->type->title }}, {{$content->year}}+ </div>
                                 <div class="d-flex flex-wrap mb-4">
                                     @foreach ($content->categories as $category)
                                         <span class="badge text-bg-danger p-2 rounded-0 me-2">{{ $category->title }}</span>
@@ -44,13 +44,7 @@
                         </div>
                         @if ($content->description)
                             <div class="col-md-12">
-                                <div> В центре сюжета - школьник по имени Морти и его дедушка Рик. Морти - самый обычный
-                                    мальчик, который ничем не отличается от своих сверстников. А вот его дедуля
-                                    занимается необычными научными исследованиями и зачастую полностью неадекватен. Он
-                                    может в любое время дня и ночи схватить внука и отправиться вместе с ним в безумные
-                                    приключения с помощью построенной из разного хлама летающей тарелки, которая
-                                    способна перемещаться сквозь межпространственный тоннель. Каждый раз эта парочка
-                                    оказывается в самых неожиданных местах и самых нелепых ситуациях.</div>
+                                <div>{{ $content->description }}</div>
                             </div>
                         @endif
                     </div>
