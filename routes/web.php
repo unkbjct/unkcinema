@@ -11,6 +11,7 @@ use App\Http\Controllers\GetControllers\SingleController as SingleViews;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\PostControllers\PersonalController as PersonalCore;
 use App\Http\Controllers\PostControllers\SingleController as SingleCore;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,11 +25,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get("/test", function () {
+    dd(json_decode(Cookie::get('continue')));
+});
+
 Route::post('/upload/large/file', [HelpController::class, 'uploadLargeFiles'])->name('files.upload.large');
 
 Route::get('/', [SingleViews::class, 'welcome'])->name("home");
 
 Route::get('/search', [SingleViews::class, 'search'])->name("search");
+
+Route::get('/notification', [SingleViews::class, 'notifications'])->name("notifications");
+
+Route::get('/tg/{tg_user}/notifications', [SingleViews::class, 'tgNotifications'])->name('tg.notifications');
 
 Route::get('/content/{content}', [SingleViews::class, 'content'])->name("content");
 
@@ -93,6 +102,7 @@ Route::group(['prefix' => 'core', 'namepsace' => 'core'], function () {
         Route::post('/episode/remove', [AdminVideoCore::class, 'episodeRemove'])->name('core.admin.episode.remove');
         Route::post('/episode/remove', [AdminVideoCore::class, 'episodeRemove'])->name('core.admin.episode.remove');
         Route::post('/episode/edit', [AdminVideoCore::class, 'episodeEdit'])->name('core.admin.episode.edit');
+        Route::post('/setCookie', [SingleCore::class, 'setCookie'])->name('core.cookie.set');
 
         Route::group(['prefix' => 'types'], function () {
 

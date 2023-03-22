@@ -39,6 +39,7 @@ class newVideo {
         let checkFullScreenMode = false;
         let videoIsFocus = false;
         let isHidden = false;
+        let isContinueSended = false;
 
         // CONTAINER 
         this.container = document.getElementById("video-container");
@@ -181,6 +182,23 @@ class newVideo {
             });
         }
 
+        if (this.container.dataset.continue) {
+            this.continue = JSON.parse(this.container.dataset.continue);
+
+            this.continueBtn = document.createElement("div");
+            this.continueBtn.classList.add("btn")
+            this.continueBtn.classList.add("btn-sm")
+            this.continueBtn.classList.add("btn-dark");
+            this.continueBtn.classList.add("btn-continue");
+            this.continueBtn.textContent = `Продолжить просмотр ${formatTime(this.continue.time, (this.continue.time > 3600) ? true : false)}`;
+            this.continueBtn.addEventListener("click", function (e) {
+                this.video.currentTime = this.continue.time - 10;
+                e.target.remove();
+                this.continueBtn = null;
+            }.bind(this))
+            this.controlsContainer.append(this.continueBtn);
+        }
+
         //creating controls shadows 
         this.controlsShadow = document.createElement("div")
         this.controlsShadow.setAttribute("id", "controls-shadow")
@@ -269,7 +287,7 @@ class newVideo {
 
         this.video.addEventListener("canplay", function () {
             this.duration.innerHTML = formatTime(this.video.duration, (this.video.duration > 3600) ? true : false);
-            this.currentTime.innerHTML = formatTime(0);
+            this.currentTime.innerHTML = formatTime(this.video.currentTime, (this.video.currentTime > 3600) ? true : false);
         }.bind(this))
 
         // this.video.addEventListener("progress", function () {
@@ -278,6 +296,38 @@ class newVideo {
         // }.bind(this), false);
 
         this.video.addEventListener("timeupdate", function () {
+
+            if (!isContinueSended && (Math.trunc(this.video.currentTime) % 3) == 0) {
+                let serialInfo;
+                if (this.isSerial) {
+                    serialInfo = {
+                        episode: this.episode.number,
+                        season: JSON.parse(this.container.dataset.thisSeason).number,
+                    }
+                } else {
+                    serialInfo = null;
+                }
+                fetch(location.protocol + '//' + location.host + '/core/admin/setCookie', {
+                    method: 'post',
+                    headers: {
+                        "Content-Type": "application/json",
+                        // 'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: JSON.stringify({
+                        _token: document.querySelector('meta[name="csrf-token"]').content,
+                        continue: {
+                            isSerial: this.isSerial,
+                            content: this.container.dataset.contentId,
+                            time: this.video.currentTime,
+                            serialInfo: serialInfo
+                        }
+                    })
+                })
+                isContinueSended = true;
+            } else {
+                isContinueSended = false;
+            }
+
             let progress = Math.floor(this.video.currentTime) / Math.floor(this.video.duration);
             this.currentProgress.style.width = Math.floor(progress * this.progressBar.offsetWidth) + "px";
             this.currentTime.innerHTML = formatTime(this.video.currentTime, (this.video.currentTime > 3600) ? true : false);
@@ -323,6 +373,9 @@ class newVideo {
         this.progressBar.addEventListener("click", function (e) {
             var x = (e.pageX - ((this.controls.offsetLeft - this.controls.offsetWidth / 2) + this.container.offsetLeft)) / this.progressBar.offsetWidth;
             this.video.currentTime = x * this.video.duration;
+            let progress = Math.floor(this.video.currentTime) / Math.floor(this.video.duration);
+            this.currentProgress.style.width = Math.floor(progress * this.progressBar.offsetWidth) + "px";
+            this.currentTime.innerHTML = formatTime(this.video.currentTime, (this.video.currentTime > 3600) ? true : false);
         }.bind(this))
 
         // this.progressBar.addEventListener("mousedown", function (e) {
@@ -358,7 +411,9 @@ class newVideo {
         }.bind(this));
 
         this.controlsContainer.addEventListener("click", function (e) {
-            this.btnHide
+            if (this.container.dataset.continue && this.continueBtn) this.continueBtn.remove();
+
+            // this.btnHide
             showControls(this);
             if (e.composedPath().includes(this.controls)
                 || e.composedPath().includes(this.serialModal)

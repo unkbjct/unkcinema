@@ -39,9 +39,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Рандомайзер</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Уведомления</a>
-                            </li>
+                            {{-- <li class="nav-item @if (str_contains(Request::route()->getName(), 'notifications')) active @endif">
+                                <a class="nav-link" href="{{route('notifications')}}">Уведомления</a>
+                            </li> --}}
                         </ul>
                         <form class="d-flex me-auto" action="{{ route('search') }}" role="search">
                             <input class="form-control border-end-0" type="search" placeholder="Поиск" name="title">

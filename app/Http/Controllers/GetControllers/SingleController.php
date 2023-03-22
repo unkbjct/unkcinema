@@ -10,16 +10,24 @@ use App\Models\Content_attribute;
 use App\Models\Content_category;
 use App\Models\Episode;
 use App\Models\Season;
+use App\Models\Tg_user;
 use App\Models\Type;
 use App\Models\User;
 use App\Models\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 
 class SingleController extends Controller
 {
     public function welcome()
     {
-        return view('welcome');
+        $continue = json_decode(Cookie::get('continue'));
+        if ($continue) {
+            $continue->content = Content::find($continue->content);
+        }
+        return view('welcome', [
+            'continue' => $continue
+        ]);
     }
 
     public function search(Request $request)
@@ -144,9 +152,12 @@ class SingleController extends Controller
             ->select("categories.title")
             ->get();
 
+        $continue = json_decode(Cookie::get('continue'));
+
         return view('content', [
             'content' => $content,
             'comments' => $comments,
+            'continue' => $continue,
         ]);
     }
 
@@ -158,5 +169,16 @@ class SingleController extends Controller
     function signUp()
     {
         return view('sign-up');
+    }
+
+    public function notifications()
+    {
+        return view('notifications');
+    }
+
+    public function tgNotifications($tgUser)
+    {
+        // return t
+        return $tgUser;
     }
 }

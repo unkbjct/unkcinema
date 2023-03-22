@@ -28,10 +28,10 @@
                 </form>
             </div>
             <div>
-                <div class="row gy-4">
+                <form action="{{route('admin.categories')}}" method="GET" class="row gy-4">
                     <div class="col-lg-4">
                         <div class="mb-3">
-                            <input type="email" class="form-control" placeholder="Название" id="title_rus">
+                            <input name="title" value="{{old('title')}}" type="text" class="form-control" placeholder="Название" id="title_rus">
                         </div>
                     </div>
                     <div class="col-lg-4">
@@ -42,7 +42,7 @@
                     </div>
                     <div class="col-lg-4">
                     </div>
-                </div>
+                </form>
             </div>
             <div>
                 <table class="table table-hover">
@@ -50,7 +50,6 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Название</th>
-                            <th scope="col">Дата создания</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -59,7 +58,6 @@
                             <tr>
                                 <th scope="row">{{ $category->id }}</th>
                                 <td>{{ $category->title }}</td>
-                                <td>{{ $category->created_at }}</td>
                                 <td>
                                     <div class="d-flex">
 

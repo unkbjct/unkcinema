@@ -28,6 +28,6 @@ window.onload = function () {
         })
     })
 
-    
+
 }
 

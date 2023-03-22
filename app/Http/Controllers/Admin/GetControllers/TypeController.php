@@ -9,10 +9,16 @@ use Illuminate\Http\Request;
 
 class TypeController extends Controller
 {
-    public function types()
+    public function types(Request $request)
     {
-        $types = Type::all();
+        $request->flash();
         
+        $types = Type::orderByDesc('id');
+        
+        if ($request->has("title") && $request->title)
+            $types->where("title", "LIKE", "%{$request->title}%");
+
+        $types = $types->get();
         return view('admin.types.list', [
             'types' => $types,
         ]);

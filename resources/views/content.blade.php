@@ -9,6 +9,7 @@
 @endsection
 
 @section('components')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('public/css/plugin.css') }}">
     <script src="{{ asset('public/js/plugin.js') }}"></script>
     <script src="{{ asset('public/js/content.js') }}"></script>
@@ -26,7 +27,10 @@
                         <div class="col-md-9">
                             <div>
                                 <div class="display-2 mb-3">{{ $content->title_rus }}</div>
-                                <div class="mb-3 fw-semibold">{{ $content->type->title }}, {{$content->year}}+ </div>
+                                @if (Cookie::has('continue'))
+                                    <div class="display-2 mb-3">asdf</div>
+                                @endif
+                                <div class="mb-3 fw-semibold">{{ $content->type->title }}, {{ $content->year }}+ </div>
                                 <div class="d-flex flex-wrap mb-4">
                                     @foreach ($content->categories as $category)
                                         <span class="badge text-bg-danger p-2 rounded-0 me-2">{{ $category->title }}</span>
@@ -53,12 +57,19 @@
         </section>
         <section id="content" class="mb-5">
             @if ($content->type->is_one_video)
-                <div data-src="{{ asset($content->video->url) }}" id="video-container" class="mb-5">
+                <div data-src="{{ asset($content->video->url) }}" data-content-id="{{ $content->id }}"
+                    @if ($continue && $continue->content == $content->id) data-continue="{{ Cookie::get('continue') }}" @endif
+                    id="video-container" class="mb-5">
                 </div>
             @else
                 <div data-src="{{ asset($content->thisEpisode->url) }}" data-seasons="{{ $content->seasons }}"
-                    data-is-serial="0" data-this-season="{{ $content->thisSeason }}"
+                    data-is-serial="0" data-this-season="{{ $content->thisSeason }}" data-content-id="{{ $content->id }}"
                     data-this-episode="{{ $content->thisEpisode }}" data-next-episode="{{ $content->nextEpisode }}"
+                    @if (
+                        $continue &&
+                            $continue->content == $content->id &&
+                            $continue->serialInfo->season == $content->thisSeason->number &&
+                            $continue->serialInfo->season == $content->thisEpisode->number) data-continue="{{ Cookie::get('continue') }}" @endif
                     id="video-container" class="mb-5">
                 </div>
             @endif

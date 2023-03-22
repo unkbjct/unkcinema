@@ -8,9 +8,17 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function categories()
+    public function categories(Request $request)
     {
-        $categoires = Category::all();
+        $request->flash();
+        
+        $categoires = Category::orderByDesc('id');
+
+        if ($request->has('title') && $request->title)
+            $categoires->where("title", "LIKE", "%{$request->title}%");
+
+        $categoires = $categoires->get();
+
         return view("admin.categories.list", [
             'categories' => $categoires,
         ]);

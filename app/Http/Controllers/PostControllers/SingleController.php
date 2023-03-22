@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Content;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class SingleController extends Controller
 {
@@ -21,5 +23,13 @@ class SingleController extends Controller
         $comment->save();
 
         return redirect()->back()->with(['success' => 'Комментарий добавлен успешно']);
+    }
+
+    public function setCookie(Request $request)
+    {
+        // return $request->input();
+        $response = new Response('Set Cookie');
+        // $response;
+        return $response->withCookie(cookie()->forever('continue', json_encode($request->continue)));
     }
 }

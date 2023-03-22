@@ -16,11 +16,17 @@ use Illuminate\Http\Request;
 
 class ContentController extends Controller
 {
-    public function contents()
+    public function contents(Request $request)
     {
+        $request->flash();
+        
         $contents = Content::join("types", "contents.type", "=", "types.id")
-            ->select("contents.*", "types.title as type")
-            ->get();
+            ->select("contents.*", "types.title as type")->orderByDesc('id');
+
+        if ($request->has('title') && $request->title != null)
+            $contents->where("title_rus", "LIKE", "%{$request->title}%");
+
+        $contents = $contents->get();
         return view('admin.contents.list', [
             'contents' => $contents,
         ]);

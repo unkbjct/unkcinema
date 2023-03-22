@@ -14,10 +14,10 @@
                 </div>
             </div>
             <div>
-                <div class="row gy-4">
+                <form method="GET" action="{{route('admin.contents')}}" class="row gy-4">
                     <div class="col-lg-4">
                         <div class="mb-3">
-                            <input type="email" class="form-control" placeholder="Название" id="title_rus">
+                            <input name="title" type="text" value="{{old('title')}}" class="form-control" placeholder="Название" id="title_rus">
                         </div>
                     </div>
                     <div class="col-lg-4">
@@ -27,7 +27,7 @@
                         </div>
                     </div>
                     <div class="col-lg-4"></div>
-                </div>
+                </form>
             </div>
             <div>
                 <table class="table table-hover">
