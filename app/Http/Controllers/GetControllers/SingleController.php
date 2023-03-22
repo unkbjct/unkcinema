@@ -135,12 +135,12 @@ class SingleController extends Controller
         });
 
         $content->attributes = Content_attribute::where("content", $content->id)
-            ->join("attributes", "Content_attributes.attribute", "=", "attributes.id")
-            ->select("Content_attributes.value as value", "attributes.name as name")
+            ->join("attributes", "content_attributes.attribute", "=", "attributes.id")
+            ->select("content_attributes.value as value", "attributes.name as name")
             ->get();
 
         $content->categories = Content_category::where("content", $content->id)
-            ->join("Categories", "Content_categories.category", "=", "categories.id")
+            ->join("categories", "content_categories.category", "=", "categories.id")
             ->select("categories.title")
             ->get();
 
