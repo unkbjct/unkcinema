@@ -51,16 +51,16 @@ class newVideo {
         this.video.setAttribute("src", this.container.dataset.src);
         this.container.append(this.video);
 
-        if (getMobileOperatingSystem() == 'iOS') {
-            this.controlsContainer.classList.add("visually-hiiden");
-            return;
-        }
-
+        
         //creating controls container
         this.controlsContainer = document.createElement("div");
         this.controlsContainer.setAttribute("id", "controls-container")
         this.container.append(this.controlsContainer)
-
+        
+        if (getMobileOperatingSystem() == 'iOS') {
+            this.controlsContainer.classList.add("visually-hiiden");
+            this.controlsContainer.remove();
+        }
         // if content is serial
         if (this.isSerial) {
             this.episode = JSON.parse(this.container.dataset.thisEpisode)

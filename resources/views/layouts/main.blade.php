@@ -37,7 +37,7 @@
                                     href="{{ route('search') }}">Поиск</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Рандомайзер</a>
+                                <a class="nav-link" href="{{ route('random') }}">Рандомайзер</a>
                             </li>
                             {{-- <li class="nav-item @if (str_contains(Request::route()->getName(), 'notifications')) active @endif">
                                 <a class="nav-link" href="{{route('notifications')}}">Уведомления</a>

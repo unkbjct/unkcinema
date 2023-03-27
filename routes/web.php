@@ -37,6 +37,8 @@ Route::get('/search', [SingleViews::class, 'search'])->name("search");
 
 Route::get('/notification', [SingleViews::class, 'notifications'])->name("notifications");
 
+Route::get('/random', [SingleViews::class, 'random'])->name('random');
+
 Route::get('/tg/{tg_user}/notifications', [SingleViews::class, 'tgNotifications'])->name('tg.notifications');
 
 Route::get('/content/{content}', [SingleViews::class, 'content'])->name("content");
