@@ -73,6 +73,7 @@ class ContentController extends Controller
             return $item;
         });
         $categories = Category::all();
+        // dd
         // dd($content);
         return view("admin.contents.information", [
             'types' => $types,

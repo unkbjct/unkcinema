@@ -27,9 +27,9 @@
                         <div class="col-md-9">
                             <div>
                                 <div class="display-2 mb-3">{{ $content->title_rus }}</div>
-                                @if (Cookie::has('continue'))
+                                {{-- @if (Cookie::has('continue'))
                                     <div class="display-2 mb-3">asdf</div>
-                                @endif
+                                @endif --}}
                                 <div class="mb-3 fw-semibold">{{ $content->type->title }}, {{ $content->year }}+ </div>
                                 <div class="d-flex flex-wrap mb-4">
                                     @foreach ($content->categories as $category)

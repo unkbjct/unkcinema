@@ -15,23 +15,23 @@
     <script type="text/javascript">
         $(".edit-episode").on("change", function() {
             let name = $(this).attr("name");
-                $.ajax({
-                    url: '{{ route('core.admin.episode.edit') }}',
-                    method: 'post',
-                    data: {
-                        episodeId: $(this).data("episode-id"),
-                        _token: '{{ csrf_token() }}',
-                        startOpening: $(this).parent().parent().find(".startOpening").val(),
-                        endOpening: $(this).parent().parent().find(".endOpening").val(),
-                        startFinish: $(this).parent().parent().find(".startFinish").val(),
-                    },
-                    success: function(id) {
-                        console.log(id)
-                    },
-                    error: function() {
-                        alert("Что то пошло не так! Попробуйте позже")
-                    }
-                });
+            $.ajax({
+                url: '{{ route('core.admin.episode.edit') }}',
+                method: 'post',
+                data: {
+                    episodeId: $(this).data("episode-id"),
+                    _token: '{{ csrf_token() }}',
+                    startOpening: $(this).parent().parent().find(".startOpening").val(),
+                    endOpening: $(this).parent().parent().find(".endOpening").val(),
+                    startFinish: $(this).parent().parent().find(".startFinish").val(),
+                },
+                success: function(id) {
+                    console.log(id)
+                },
+                error: function() {
+                    alert("Что то пошло не так! Попробуйте позже")
+                }
+            });
         })
 
         function enableUpload(element) {
@@ -368,7 +368,7 @@
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label for="description" class="form-label">Описание</label>
-                                <textarea name="description" value="{{ $content->description }}" id="description" class="form-control"></textarea>
+                                <textarea name="description" id="description" class="form-control">{{ $content->description }}</textarea>
                                 <div class="form-text">Не обязательное, максимум 10 000 символов.</div>
                             </div>
                         </div>

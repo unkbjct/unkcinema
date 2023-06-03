@@ -21,10 +21,11 @@ class ContentController extends Controller
         $content = new Content();
         $content->title_rus = $request->title_rus;
         $content->title_eng = str_replace(" ", "-", $request->title_eng);
+        // $c
         $content->image = 'public/storage/' . $path;
         $content->type = $request->type;
         $content->year = $request->year;
-        if ($request->has('description') && $request->description) $content->year = $request->year;
+        if ($request->has('description') && $request->description) $content->description = $request->description;
         $content->save();
 
         if ($request->has("attributes")) {
