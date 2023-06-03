@@ -95,3 +95,33 @@ a {
     transition: width 1.5s linear;
     width: 100%;
 }
+
+.edit-cover {
+    opacity: 0;
+    transition: opacity .15s;
+}
+
+.user-cover:hover .edit-cover {
+    opacity: 1;
+}
+
+img {
+    user-select: none;
+}
+
+.btn-mark {
+    cursor: pointer;
+    transition: scale .15s;
+}
+
+.btn-mark:active {
+    scale: .9;
+}
+
+.btn-mark:is(.active) .bookmark {
+    display: none;
+}
+
+.btn-mark:not(.active) .bookmark-fill {
+    display: none;
+}

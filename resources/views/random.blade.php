@@ -21,7 +21,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="collapse show" id="collapseExample">
+                <div class="collapse" id="collapseExample">
                     <div class="card-body bg-danger">
                         <div class="row gy-4">
                             <div class="col-md-4">
@@ -90,9 +90,6 @@
                                 <div class="h-100 d-flex flex-column">
                                     <div class="my-auto">
                                         <div class="display-2 mb-3">{{ $content->title_rus }}</div>
-                                        @if (Cookie::has('continue'))
-                                            <div class="display-2 mb-3">asdf</div>
-                                        @endif
                                         <div class="mb-3 fw-semibold">{{ $content->type->title }}, {{ $content->year }}+
                                         </div>
                                         <div class="d-flex flex-wrap mb-3">

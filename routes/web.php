@@ -8,9 +8,11 @@ use App\Http\Controllers\Admin\PostControllers\ContentController as AdminContent
 use App\Http\Controllers\Admin\PostControllers\TypeController as AdminTypeCore;
 use App\Http\Controllers\Admin\PostControllers\VideoController as AdminVideoCore;
 use App\Http\Controllers\GetControllers\SingleController as SingleViews;
+use App\Http\Controllers\GetControllers\UserController as UserViews;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\PostControllers\PersonalController as PersonalCore;
 use App\Http\Controllers\PostControllers\SingleController as SingleCore;
+use App\Http\Controllers\PostControllers\UserController as UserCore;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +48,13 @@ Route::get('/content/{content}', [SingleViews::class, 'content'])->name("content
 Route::get('/login', [SingleViews::class, 'login'])->name("login");
 
 Route::get('/sign-up', [SingleViews::class, 'signUp'])->name("sign-up");
+
+Route::get("/bookmarks", [UserViews::class, 'bookmarks'])->name('user.bookmarks');
+
+Route::group(['prefix' => 'user'], function () {
+
+    Route::get("/{login}", [UserViews::class, 'profile'])->name('user.profile');
+});
 
 Route::group(['prefix' => 'admin'], function () { // ADMIN ----------------------------------------------------
 
@@ -86,6 +95,17 @@ Route::group(['prefix' => 'core', 'namepsace' => 'core'], function () {
     Route::get('/personal/logout', [PersonalCore::class, 'logout'])->name('core.personal.logout');
 
     Route::post('/content/{content}/comment', [SingleCore::class, 'commentCreate'])->name('core.content.comment.create');
+
+    Route::group(['prefix' => 'user'], function () {
+
+        Route::post('/edit/avatar', [UserCore::class, 'editAvatar'])->name('user.edit.avatar');
+
+        Route::post('/edit/cover', [UserCore::class, 'editCover'])->name('user.edit.cover');
+
+        Route::post('/edit/data', [UserCore::class, 'editData'])->name('user.edit.data');
+
+        Route::post('/edit/bookmarks', [UserCore::class, 'bookmarks'])->name('core.user.bookmarks');
+    });
 
     Route::group(['prefix' => 'admin'], function () {
 
