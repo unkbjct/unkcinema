@@ -125,3 +125,30 @@ img {
 .btn-mark:not(.active) .bookmark-fill {
     display: none;
 }
+
+.custom-card:hover img {
+    translate: 0 -2px;
+    box-shadow: 0 4px 20px 4px rgba(30, 30, 30, .15);
+    scale: 1.5;
+}
+
+.custom-card_image {
+    height: 150px;
+    display: flex;
+    border: 1px solid rgba(30, 30, 30, .2);
+    box-shadow: inset 0 4px 20px 4px rgba(30, 30, 30, .15);
+    overflow: hidden;
+}
+
+.custom-card img {
+    height: 100%;
+    object-fit: cover;
+    margin: auto;
+    transition: box-shadow .2s ease, translate .2s ease;
+}
+
+.custom-card .description {
+    overflow: hidden;
+    text-overflow: ellipsis !important;
+    white-space: nowrap;
+}

@@ -20,7 +20,7 @@
         <header>
             <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
                 <div class="container">
-                    <a class="navbar-brand" href="{{ route('home') }}">UnkCinema</a>
+                    <a class="navbar-brand" href="{{ route('home') }}">{{ config('app.name') }}</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -36,12 +36,6 @@
                                 <a class="nav-link @if (str_contains(Request::route()->getName(), 'search')) active @endif"
                                     href="{{ route('search') }}">Поиск</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('random') }}">Рандомайзер</a>
-                            </li>
-                            {{-- <li class="nav-item @if (str_contains(Request::route()->getName(), 'notifications')) active @endif">
-                                <a class="nav-link" href="{{route('notifications')}}">Уведомления</a>
-                            </li> --}}
                         </ul>
                         <form class="d-flex me-auto" action="{{ route('search') }}" role="search">
                             <input class="form-control border-end-0" type="search" placeholder="Поиск" name="title">
@@ -50,7 +44,7 @@
                         <ul class="navbar-nav me-5 mb-2 mb-lg-0">
                             @if (Auth::check())
                                 <li class="nav-item">
-                                    <a class="nav-link @if (Request::route()->getName() == "user.bookmarks") active @endif"
+                                    <a class="nav-link @if (Request::route()->getName() == 'user.bookmarks') active @endif"
                                         href="{{ route('user.bookmarks') }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
@@ -123,10 +117,10 @@
                     <ul class="nav justify-content-center border-bottom pb-3 mb-3">
                         <li class="nav-item"><a href="{{ route('home') }}" class="nav-link px-2 text-white">Главная</a>
                         </li>
-                        <li class="nav-item"><a target="_blank" href="https://t.me/unkbjct"
+                        <li class="nav-item"><a target="_blank" href="#"
                                 class="nav-link px-2 text-white">Telegram</a></li>
                     </ul>
-                    <p class="text-center text-white">© 2022 Company, Inc</p>
+                    <p class="text-center text-white">© 2024 {{ config('app.name') }}</p>
                 </div>
             </div>
         </footer>

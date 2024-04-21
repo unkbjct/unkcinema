@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Content;
+use Illuminate\Support\Str;
 use App\Models\Episode;
 use App\Models\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Pion\Laravel\ChunkUpload\Handler\HandlerFactory;
 use Pion\Laravel\ChunkUpload\Receiver\FileReceiver;
+use Owenoj\LaravelGetId3\GetId3;
 
 class HelpController extends Controller
 {
@@ -26,31 +29,25 @@ class HelpController extends Controller
             $file = $fileReceived->getFile(); // get file
 
             $extension = $file->getClientOriginalExtension();
-            $fileName = str_replace('.' . $extension, '', $file->getClientOriginalName()); //file name without extenstion
+            Log::debug($extension);
+            $fileName = Str::slug(str_replace('.' . $extension, '', $file->getClientOriginalName())); //file name without extenstion
             $fileName .= '_' . md5(time()) . '.' . $extension; // a unique file name
 
-            $contentTitle = str_replace(" ", "-", Content::find($request->contentId)->title_eng);
+            $contentTitle = Content::find($request->contentId)->title_eng;
 
             $finalPath = storage_path("app/public/contents/" . $contentTitle . "/");
 
             $file->move($finalPath, $fileName);
-            if ($request->isVideo == 'true') {
-                $video = Video::where("content", $request->contentId)->first();
-                if ($video) {
-                    $video->url = "public/storage/contents/" . $contentTitle . "/" . $fileName;
-                    $video->save();
-                } else {
-                    $video = new Video();
-                    $video->content = $request->contentId;
-                    $video->url = "public/storage/contents/" . $contentTitle . "/" . $fileName;
-                    $video->save();
-                }
-            } else {
-                Log::debug($request->isVideo);
-                $episode = Episode::find($request->episodeId);
-                $episode->url = "public/storage/contents/" . $contentTitle . "/" . $fileName;
-                $episode->save();
-            }
+            $video = Video::where("content", $request->contentId)->first();
+            if (!$video) {
+                $video = new Video();
+                $video->content = $request->contentId;
+            };
+            Storage::disk('local')->delete("public/contents/" . $contentTitle . "/" . array_reverse(explode("/", $video->url))[0]);
+            $video->url = "public/storage/contents/" . $contentTitle . "/" . $fileName;
+            $video->duration = GetId3::fromDiskAndPath('local', "public/contents/" . $contentTitle . "/" . $fileName)->getPlaytimeSeconds();
+            $video->extension = $extension;
+            $video->save();
 
             // if (file_exists($file->getPathname())) unlink($file->getPathname());
             return [

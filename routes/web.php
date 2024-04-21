@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\GetControllers\TypeController as AdminTypeViews;
 use App\Http\Controllers\Admin\PostControllers\CategoryController as AdminCategoryCore;
 use App\Http\Controllers\Admin\PostControllers\ContentController as AdminContentCore;
 use App\Http\Controllers\Admin\PostControllers\TypeController as AdminTypeCore;
+use App\Http\Controllers\Admin\PostControllers\UserController as AdminUserCore;
 use App\Http\Controllers\Admin\PostControllers\VideoController as AdminVideoCore;
 use App\Http\Controllers\GetControllers\SingleController as SingleViews;
 use App\Http\Controllers\GetControllers\UserController as UserViews;
@@ -13,6 +14,7 @@ use App\Http\Controllers\HelpController;
 use App\Http\Controllers\PostControllers\PersonalController as PersonalCore;
 use App\Http\Controllers\PostControllers\SingleController as SingleCore;
 use App\Http\Controllers\PostControllers\UserController as UserCore;
+use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
 
@@ -37,12 +39,6 @@ Route::get('/', [SingleViews::class, 'welcome'])->name("home");
 
 Route::get('/search', [SingleViews::class, 'search'])->name("search");
 
-Route::get('/notification', [SingleViews::class, 'notifications'])->name("notifications");
-
-Route::get('/random', [SingleViews::class, 'random'])->name('random');
-
-Route::get('/tg/{tg_user}/notifications', [SingleViews::class, 'tgNotifications'])->name('tg.notifications');
-
 Route::get('/content/{content}', [SingleViews::class, 'content'])->name("content");
 
 Route::get('/login', [SingleViews::class, 'login'])->name("login");
@@ -56,7 +52,7 @@ Route::group(['prefix' => 'user'], function () {
     Route::get("/{login}", [UserViews::class, 'profile'])->name('user.profile');
 });
 
-Route::group(['prefix' => 'admin'], function () { // ADMIN ----------------------------------------------------
+Route::group(['prefix' => 'admin', 'middleware' => 'auth', 'middleware' => IsAdmin::class], function () { // ADMIN ----------------------------------------------------
 
     Route::get('/', [AdminContentViews::class, 'contents'])->name("admin");
 
@@ -84,6 +80,10 @@ Route::group(['prefix' => 'admin'], function () { // ADMIN ---------------------
 
         Route::get('/create', [AdminCategoryViews::class, 'create'])->name("admin.categories.create");
     });
+
+    Route::group(['prefix' => 'users'], function () {
+        Route::get('/', [AdminUserCore::class, 'view'])->name("admin.users");
+    });
 });
 
 Route::group(['prefix' => 'core', 'namepsace' => 'core'], function () {
@@ -107,7 +107,7 @@ Route::group(['prefix' => 'core', 'namepsace' => 'core'], function () {
         Route::post('/edit/bookmarks', [UserCore::class, 'bookmarks'])->name('core.user.bookmarks');
     });
 
-    Route::group(['prefix' => 'admin'], function () {
+    Route::group(['prefix' => 'admin', 'middleware' => 'auth', 'middleware' => IsAdmin::class], function () {
 
         Route::group(['prefix' => 'contents'], function () {
 
@@ -140,6 +140,11 @@ Route::group(['prefix' => 'core', 'namepsace' => 'core'], function () {
             Route::post('/create', [AdminCategoryCore::class, 'create'])->name('core.admin.categories.create');
 
             Route::post('/{category}/remove', [AdminCategoryCore::class, 'remove'])->name('core.admin.categories.remove');
+        });
+
+        Route::group(['prefix' => 'users'], function () {
+
+            Route::post('/setAdmin', [AdminUserCore::class, 'setUser'])->name('core.admin.user.set');
         });
     });
 });

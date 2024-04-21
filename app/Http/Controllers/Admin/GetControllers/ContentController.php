@@ -21,7 +21,8 @@ class ContentController extends Controller
         $request->flash();
 
         $contents = Content::join("types", "contents.type", "=", "types.id")
-            ->select("contents.*", "types.title as type")->orderByDesc('id');
+            ->join("videos", "contents.id", "=", "videos.content")
+            ->select("contents.*", "types.title as type", "videos.duration", "videos.extension")->orderByDesc('id');
 
         if ($request->has('title') && $request->title != null)
             $contents->where("title_rus", "LIKE", "%{$request->title}%");

@@ -38,7 +38,7 @@
                                     placeholder="Название характеристики">
                                 <button type="button" id="add-attribute" class="btn btn-dark">Добавить</button>
                             </div>
-                            <div id="emailHelp" class="form-text">Длительность/Количество серий/ и т.п.</div>
+                            <div id="emailHelp" class="form-text">Автор/Идея и другое</div>
                         </div>
                         <div id="attributes-list" class="d-flex flex-wrap">
                             @foreach ($attributes as $attr)

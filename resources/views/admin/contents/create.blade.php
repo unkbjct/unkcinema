@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    Весь контент
+    Все сюжеты
 @endsection
 
 @section('components')
@@ -13,7 +13,7 @@
     <div class="container">
         <div class="card card-body border border-danger">
             <div class="mb-5">
-                <div class="display-5 mb-3">Создание нового контента</div>
+                <div class="display-5 mb-3">Создание нового Сюжета</div>
                 <a href="{{ route('admin.contents') }}" class="btn btn-outline-dark">Вернуться назад</a>
             </div>
             <div class="div">
@@ -36,14 +36,7 @@
                                 <div class="form-text">Не обязательное, максимум 10 000 символов.</div>
                             </div>
                         </div>
-                        <div class="col-lg-2">
-                            <div class="mb-3">
-                                <label for="year" class="form-label">Возраст просмотра</label>
-                                <input required type="number" class="form-control" name="year" id="year">
-                                <div class="form-text">Цифра, обязательное.</div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-6">
                             <div class="mb-3">
                                 <label for="image" class="form-label">Изображение</label>
                                 <input required type="file" class="form-control" name="image" id="image">
@@ -52,7 +45,7 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <label for="type" class="form-label">Вид контента</label>
+                                <label for="type" class="form-label">Категрия Сюжета</label>
                                 <select required class="form-select" name="type" id="type"
                                     aria-label="Default select example">
                                     <option selected></option>
@@ -70,7 +63,7 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <label for="category" class="form-label">Жанры / Теги</label>
+                                <label for="category" class="form-label">Теги</label>
                                 <div class="input-group">
                                     <select class="form-select" name="category" id="value-category"
                                         aria-label="Default select example">
@@ -91,8 +84,8 @@
                     <div class="col-lg-12">
                         <div class="mb-3 d-flex">
                             <button class="btn btn-outline-danger" disabled>Добавить видео можно после создания
-                                контента</button>
-                            <button class="btn ms-auto btn-danger">Создать контент</button>
+                                Сюжета</button>
+                            <button class="btn ms-auto btn-danger">Создать Сюжет</button>
                         </div>
                     </div>
                 </form>

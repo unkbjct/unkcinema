@@ -1,14 +1,14 @@
 @extends('layouts.admin')
 
 @section('title')
-    Виды произведений
+    Категории сюжетов
 @endsection
 
 @section('admin')
     <div class="container">
         <div class="card card-body border border-danger">
             <div class="d-flex align-items-center mb-5">
-                <div class="display-5">Теги файлов</div>
+                <div class="display-5">Теги сюжетов</div>
                 <div class="ms-auto">
                     <a href="{{ route('admin.contents.create') }}" class="btn btn-dark" data-bs-toggle="collapse"
                         data-bs-target="#collapseCreate">Добавить новый тег</a>

@@ -1,14 +1,14 @@
 @extends('layouts.admin')
 
 @section('title')
-    Весь контент
+    Все сюжеты
 @endsection
 
 @section('admin')
     <div class="container">
         <div class="card card-body border border-danger">
             <div class="d-flex align-items-center mb-5">
-                <div class="display-5">Весь контент</div>
+                <div class="display-5">Все сюжеты</div>
                 <div class="ms-auto">
                     <a href="{{ route('admin.contents.create') }}" class="btn btn-dark">Добавить новый</a>
                 </div>
@@ -37,7 +37,8 @@
                             <th scope="col">#</th>
                             <th scope="col">Название</th>
                             <th scope="col">Тип</th>
-                            <th scope="col">Длительность</th>
+                            <th scope="col">Длительность <br> (в секундах)</th>
+                            <th scope="col">Формат</th>
                             <th scope="col">Дата созднания</th>
                             <th scope="col">Дата последнего обнавления</th>
                             <th scope="col"></th>
@@ -49,6 +50,10 @@
                                 <th scope="row">1</th>
                                 <td>{{ $content->title_rus }}</td>
                                 <td>{{ $content->type }}</td>
+                                <td>{{ $content->duration }}</td>
+                                <td>{{ $content->extension }}</td>
+                                <td>{{ $content->created_at }}</td>
+                                <td>{{ $content->updated_at }}</td>
                                 <td>
                                     <div class="d-flex">
                                         <a href="{{ route('admin.contents.information', ['content' => $content->id]) }}"
@@ -58,7 +63,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <th colspan="4">
+                                <th colspan="10">
                                     <div class="p-3 text-center text-muted">
                                         По заданным фильтрам ничего не найдено!
                                     </div>

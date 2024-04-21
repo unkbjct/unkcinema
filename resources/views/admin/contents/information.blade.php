@@ -13,27 +13,6 @@
 
 @section('scripts')
     <script type="text/javascript">
-        $(".edit-episode").on("change", function() {
-            let name = $(this).attr("name");
-            $.ajax({
-                url: '{{ route('core.admin.episode.edit') }}',
-                method: 'post',
-                data: {
-                    episodeId: $(this).data("episode-id"),
-                    _token: '{{ csrf_token() }}',
-                    startOpening: $(this).parent().parent().find(".startOpening").val(),
-                    endOpening: $(this).parent().parent().find(".endOpening").val(),
-                    startFinish: $(this).parent().parent().find(".startFinish").val(),
-                },
-                success: function(id) {
-                    console.log(id)
-                },
-                error: function() {
-                    alert("Что то пошло не так! Попробуйте позже")
-                }
-            });
-        })
-
         function enableUpload(element) {
             let browseFile = $(element.querySelector(".browseFile"));
             let progress = $(element.querySelector(".progress"));
@@ -131,190 +110,6 @@
         $(".list-group-item").each(function(index, element) {
             enableUpload(element)
         })
-
-
-
-        var seasonsCount =
-            @if ($content->seasons)
-                {{ $content->seasons->count() }}
-            @else
-                0
-            @endif ;
-
-        if (document.getElementById("add-season")) {
-            document.getElementById("add-season").addEventListener("click", function() {
-                $.ajax({
-                    url: '{{ route('core.admin.season.create') }}',
-                    method: 'post',
-                    data: {
-                        contentId: '{{ $content->id }}',
-                        seasonNumber: seasonsCount + 1,
-                        _token: '{{ csrf_token() }}',
-                    },
-                    success: function(id) {
-                        seasonsCount++;
-                        let element =
-                            '<div class="accordion-item">' +
-                            '<h2 class="accordion-header">' +
-                            '<button class="accordion-button" type="button" data-bs-toggle="collapse"' +
-                            `data-bs-target="#collapseSeason${seasonsCount}"><span class="number-season">${seasonsCount} Сезон</span></button>` +
-                            '</h2>' +
-                            `<div id="collapseSeason${seasonsCount}" class="accordion-collapse collapse show">` +
-                            '<div class="accordion-body">' +
-                            '<div class="d-flex">' +
-                            `<button type="button" data-episodes-count="0" data-season="${seasonsCount}" data-season-id="${id}" class="btn btn-dark mb-3 add-episode">Добавить серию</button>` +
-                            `<button type="button" class="btn btn-outline-danger ms-auto mb-3 remove-season btn-ani-remove"  data-season-id="${id}">Удалить сезон</button>` +
-                            '</div>' +
-                            '<ul class="list-group">' +
-                            '</ul>' +
-                            '</div>' +
-                            '</div>' +
-                            '</div>'
-                        document.getElementById("seasons-list").insertAdjacentHTML("afterbegin",
-                            element)
-                    },
-                    error: function() {
-                        alert("Что то пошло не так! Попробуйте позже")
-                    }
-                });
-            })
-        }
-
-        if (document.getElementById("seasons-list")) {
-            // console.log(this.querySelectorAll())
-            var startTime;
-            document.getElementById("seasons-list").addEventListener("mousedown", function(event) {
-                startTime = Date.now();
-            })
-            document.getElementById("seasons-list").addEventListener("mouseup", function(e) {
-                let differance = Date.now() - startTime;
-                if (e.target.classList.contains("add-episode")) {
-                    let btn = e.target;
-                    $.ajax({
-                        url: '{{ route('core.admin.episode.create') }}',
-                        method: 'post',
-                        data: {
-                            seasonId: $(e.target).data("season-id"),
-                            episodeNumber: (Number)(btn.dataset.episodesCount) + 1,
-                            _token: '{{ csrf_token() }}',
-                        },
-                        success: function(id) {
-                            console.log(id)
-                            btn.dataset.episodesCount++;
-                            element =
-                                '<li class="list-group-item list-group-item-action" aria-current="true">' +
-                                '<div class="row gy-4">' +
-                                '<div class="col-md-2">' +
-                                `<div class="h-100 d-flex align-items-center"><div><span class="number">${btn.dataset.episodesCount}</span> Серия</div></div>` +
-                                '</div>' +
-                                '<div class="col-md-8">' +
-                                '<div>' +
-                                '<div class="upload-container text-center">' +
-                                `<button type="button" class="btn btn-outline-dark btn-sm browseFile" data-is-video="false" data-content-id="{{ $content->id }}" data-episode-id="${id}">Выберите файл</button>` +
-                                '</div>' +
-                                '<div style="display: none" class="progress mt-3" style="height: 25px">' +
-                                '<div class="progress-bar progress-bar-striped progress-bar-animated"' +
-                                'role="progressbar" aria-valuenow="75" aria-valuemin="0"' +
-                                'aria-valuemax="100" style="width: 75%; height: 100%">75%</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '<div class="col-md-2">' +
-                                '<div class="d-flex h-100 align-items-center">' +
-                                `<button type="button" class="btn btn-sm btn-danger ms-auto remove-episode btn-ani-remove" data-episode-id="${id}">Удалить</button>` +
-                                '</div>' +
-                                '</div>' +
-                                '<div class="col-md-12 text-muted">Для изменения начала/конца концовки обновите страницу</div>'
-                            '</div>' +
-                            '</li>'
-                            element = $(element)[0]
-                            console.log(btn.parentElement)
-                            $(btn).parent().next().prepend(element)
-
-                            enableUpload(element)
-
-                        },
-                        error: function(response) {
-                            console.log(response)
-                            alert("Что то пошло не так! Попробуйте позже")
-                        }
-                    });
-                }
-                if (e.target.classList.contains("remove-episode")) {
-                    if (differance > 1500) {
-                        $.ajax({
-                            url: '{{ route('core.admin.episode.remove') }}',
-                            method: 'post',
-                            data: {
-                                episodeId: $(e.target).data("episode-id"),
-                                _token: '{{ csrf_token() }}',
-                            },
-                            success: function(response) {
-                                console.log(response)
-                                let btn = e.target;
-                                list = btn.parentElement.parentElement.parentElement.parentElement
-                                    .parentElement.children;
-                                btnAdd = $(btn).parent().parent().parent().parent().parent().prev()
-                                    .children()[0]
-                                btn.parentElement.parentElement.parentElement.parentElement.remove();
-
-                                btnAdd.dataset.episodesCount = list.length;
-                                let length = list.length;
-                                for (i = 0; i < list.length; i++) {
-                                    list[i].querySelectorAll(".number")[0].textContent = length
-                                    length--;
-                                }
-                            },
-                            error: function(respone) {
-                                console.log(respone)
-                                alert("Что то пошло не так! Попробуйте позже")
-                            }
-                        });
-                    }
-                }
-                if (e.target.classList.contains("remove-season")) {
-                    if (differance > 1500) {
-                        $.ajax({
-                            url: '{{ route('core.admin.season.remove') }}',
-                            method: 'post',
-                            data: {
-                                seasonId: $(e.target).data("season-id"),
-                                _token: '{{ csrf_token() }}',
-                            },
-                            success: function(response) {
-                                console.log(response)
-                                e.target.parentElement.parentElement.parentElement.parentElement
-                                    .remove();
-                                seasonsCount--;
-                                let length = seasonsCount;
-                                list = document.getElementById("seasons-list").children;
-                                for (i = 0; i < list.length; i++) {
-                                    list[i].querySelector(".accordion-button").dataset.bsTarget =
-                                        `#collapseSeason${length}`;
-                                    list[i].querySelector(".accordion-collapse").id =
-                                        `collapseSeason${length}`;
-                                    list[i].querySelector(".add-episode").dataset.season = length;
-                                    list[i].querySelector(".number-season").textContent = length +
-                                        " Сезон";
-                                    let episodesLength = list[i].querySelector(".add-episode").dataset
-                                        .episodesCount;
-                                    list[i].querySelectorAll(".list-group-item").forEach(item => {
-                                        item.querySelector(".episode-video").setAttribute(
-                                            "name",
-                                            `episodes[${length}][${episodesLength}]`)
-                                        episodesLength--;
-                                    })
-                                    length--;
-                                }
-                            },
-                            error: function() {
-                                alert("Что то пошло не так! Попробуйте позже")
-                            }
-                        });
-                    }
-                }
-            })
-        }
     </script>
 @endsection
 
@@ -332,7 +127,9 @@
                         </div>
                     </div>
                 </div>
-                <a href="{{ route('admin.contents') }}" class="btn btn-outline-dark mb-3">Вернуться назад</a>
+                <a href="{{ route('admin.contents') }}" class="btn btn-outline-dark mb-3">Все сюжеты</a>
+                <a href="{{ route('content', ['content' => $content->id]) }}" class="btn btn-outline-dark mb-3">Страница
+                    сюжета</a>
                 <div class="fw-semibold h4">Основная информация</div>
             </div>
             <div class="div">
@@ -345,7 +142,8 @@
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" name="published" type="checkbox"
                                         @if ($content->published) checked @endif id="published">
-                                    <label class="form-check-label" for="published">Видео опубликовано</label>
+                                    <label class="form-check-label" for="published">Доступ сюжета для обычных
+                                        пользователей</label>
                                 </div>
                             </div>
                         </div>
@@ -359,28 +157,12 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <label for="title_eng" class="form-label">Название на английском</label>
-                                <input required type="text" value="{{ $content->title_eng }}" class="form-control"
-                                    name="title_eng" id="title_eng">
-                                <div class="form-text">Или транскрипция, обязательное.</div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="mb-3">
                                 <label for="description" class="form-label">Описание</label>
                                 <textarea name="description" id="description" class="form-control">{{ $content->description }}</textarea>
                                 <div class="form-text">Не обязательное, максимум 10 000 символов.</div>
                             </div>
                         </div>
-                        <div class="col-lg-2">
-                            <div class="mb-3">
-                                <label for="year" class="form-label">Возраст просмотра</label>
-                                <input required type="number" value="{{ $content->year }}" class="form-control"
-                                    name="year" id="year">
-                                <div class="form-text">Цифра, обязательное.</div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-6">
                             <div class="mb-3">
                                 <label for="image" class="form-label">Изменить изображение</label>
                                 <input type="file" class="form-control" name="image" id="image">
@@ -389,29 +171,7 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <label for="type" class="form-label">Вид контента</label>
-                                <select required class="form-select" data-information="1" name="type" id="type"
-                                    aria-label="Default select example">
-                                    @foreach ($types as $type)
-                                        <option @if ($content->type->id == $type->id) selected @endif
-                                            data-is-one-video="{{ $type->is_one_video }}"
-                                            data-attributes="{{ $type->attributes }}" value="{{ $type->id }}">
-                                            {{ $type->title }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="form-text">Обязательное, если нужного вида нет, добавьте его <a
-                                        href="{{ route('admin.types') }}">здесь</a></div>
-                                <div class="form-text">Чтобы обновилось добавления видео, сохраните основную информаицю о
-                                    контенте</div>
-                            </div>
-                            <div id="attributes-list" data-type-id="{{ $content->type->id }}"
-                                data-attributes-value="{{ $content->attributes }}">
-
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label for="category" class="form-label">Жанры / Теги</label>
+                                <label for="category" class="form-label">Теги</label>
                                 <div class="input-group">
                                     <select class="form-select" name="category" id="value-category"
                                         aria-label="Default select example">
@@ -436,14 +196,44 @@
                                 @endforeach
                             </div>
                         </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="type" class="form-label">Категрия Сюжета</label>
+                                <select required class="form-select" data-information="1" name="type" id="type"
+                                    aria-label="Default select example">
+                                    @foreach ($types as $type)
+                                        <option @if ($content->type->id == $type->id) selected @endif
+                                            data-is-one-video="{{ $type->is_one_video }}"
+                                            data-attributes="{{ $type->attributes }}" value="{{ $type->id }}">
+                                            {{ $type->title }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="form-text">Обязательное, если нужного вида нет, добавьте его <a
+                                        href="{{ route('admin.types') }}">здесь</a></div>
+                                <div class="form-text">Чтобы обновилось добавления видео, сохраните основную информаицю о
+                                    Сюжете</div>
+                            </div>
+                            <div id="attributes-list" data-type-id="{{ $content->type->id }}"
+                                data-attributes-value="{{ $content->attributes }}">
+
+                            </div>
+                        </div>
                     </div>
                     <div class="col-lg-12">
                         <div class="mb-3 d-flex">
+
                             <a href="{{ route('admin.contents.information', ['content' => $content->id]) }}"
                                 class="btn ms-auto btn-danger">Отмена</a>
-                            <button class="btn ms-3 btn-danger">Сохранить контент</button>
+                            <button class="btn ms-3 btn-danger">Сохранить сюжет</button>
                         </div>
                     </div>
+                </form>
+                <form method="POST" id="form-remove-{{ $content->id }}"
+                    action="{{ route('core.admin.contents.remove', ['content' => $content->id]) }}">
+                    <button title="Чтобы удалить, удерживайте кнопку 1.5 секунд" data-id="{{ $content->id }}"
+                        class="btn ms-3 btn-outline-danger btn-ani-remove" type="button">Удалить
+                        сюжет</button>
+                    @csrf
                 </form>
             </div>
         </div>

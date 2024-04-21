@@ -31,7 +31,7 @@ class UserController extends Controller
 
         // dd($bookmarks);
 
-        $contents = Content::whereIn("id", $bookmarks)->get();
+        $contents = Content::whereIn("contents.id", $bookmarks)->join("videos", "contents.id", "=", "videos.content")->select("contents.*", "videos.duration")->get();
         // dd($contents);
 
         return view("user.bookmakrs", [

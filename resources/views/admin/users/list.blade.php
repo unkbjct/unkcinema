@@ -51,27 +51,50 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Название</th>
+                            <th scope="col">Логин</th>
+                            <th scope="col">Роль</th>
+                            <th scope="col">Почта</th>
+                            <th scope="col">Дата регистрации</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($types as $type)
+                        @forelse ($users as $user)
                             <tr>
-                                <th scope="row">{{ $type->id }}</th>
-                                <td>{{ $type->title }}</td>
+                                <th scope="row">{{ $user->id }}</th>
+                                <td>{{ $user->login }}</td>
+                                <td>
+                                    @if ($user->role === 'ADMIN')
+                                        <span class="badge bg-danger">Администратор</span>
+                                    @else
+                                        <span class="badge bg-secondary">Пользователь</span>
+                                    @endif
+                                </td>
+                                <td>{{ $user->email }}</td>
+                                <td>{{ date('d.m.Y', strtotime($user->created_at)) }}</td>
                                 <td>
                                     <div class="d-flex">
-                                        <a href="{{ route('admin.types.information', ['type' => $type->id]) }}"
-                                            class="btn btn-dark btn-sm ms-auto">Изменить</a>
-                                        <form id="form-remove-{{ $type->id }}"
-                                            action="{{ route('core.admin.types.remove', ['type' => $type->id]) }}"
-                                            method="post">
-                                            @csrf
-                                            <button title="Чтобы удалить, удерживайте кнопку 1.5 секунд" type="button"
-                                                class="btn btn-danger btn-sm ms-2 btn-ani-remove"
-                                                data-id="{{ $type->id }}">Удалить</button>
-                                        </form>
+                                        @if (Auth::user()->id === $user->id)
+                                            <div class="btn btn-sm btn-outline-danger disabled">Вы не можете изменить себя
+                                            </div>
+                                        @else
+                                            <form action="{{ route('core.admin.user.set') }}"
+                                                id="form-remove-{{ $user->id }}" method="post">
+                                                @csrf
+                                                <input type="hidden" name="id" value="{{ $user->id }}">
+                                                @if ($user->role === 'ADMIN')
+                                                    <input type="hidden" name="role" value="USER">
+                                                    <button title="Чтобы подтвердить, удерживайте кнопку 1.5 секунд"
+                                                        type="button" class="btn btn-secondary btn-sm ms-2 btn-ani-remove"
+                                                        data-id="{{ $user->id }}">Разжаловать до пользователя</button>
+                                                @else
+                                                    <input type="hidden" name="role" value="ADMIN">
+                                                    <button title="Чтобы подтвердить, удерживайте кнопку 1.5 секунд"
+                                                        type="button" class="btn btn-danger btn-sm ms-2 btn-ani-remove"
+                                                        data-id="{{ $user->id }}">Повысить до администратора</button>
+                                                @endif
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

@@ -84,16 +84,29 @@
         </form>
         <div class="mt-4">
             <div class="row gy-4">
-                @forelse ($contentsList as $content)
-                    <div class="col-lg-2">
-                        <a href="{{ route('content', ['content' => $content->id]) }}">
-                            <div class="card movie-item">
-                                <img src="{{ asset($content->image) }}" alt="">
-                                <div class="movie-information">
-                                    {{ $content->title_rus }}
+                @forelse ($contentsList as $c)
+                    <div class="col-lg-3">
+                        <div class="custom-card">
+                            <a href="{{ route('content', ['content' => $c->id]) }}">
+                                <div class="custom-card_image">
+                                    <img src="{{ asset($c->image) }}" alt="">
                                 </div>
+                            </a>
+                            <h5>{{ $c->title_rus }}</h5>
+                            <div class="description">
+                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Obcaecati quaerat optio repellat
+                                temporibus architecto cumque ipsam hic, totam accusamus eius ea officiis itaque doloremque
+                                a, adipisci incidunt illum natus. Unde.
                             </div>
-                        </a>
+                            <div class="text-secondary small">Длительность:
+                                @if ($c->duration >= 3600)
+                                    {{ gmdate('H:i:s', $c->duration) }}
+                                @else
+                                    {{ gmdate('i:s', $c->duration) }}
+                                @endif
+                            </div>
+                            <div class="text-secondary small">Автор: <a href="#">unkbjct</a></div>
+                        </div>
                     </div>
                 @empty
                     <div class="py-5 text-center text-muted fw-bold fs-3">

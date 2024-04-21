@@ -1,6 +1,4 @@
 window.onload = function () {
-    new newVideo('Rick.and.Morty.S06E01.MP4');
-    // console.log(get('episodes'))
     if (document.getElementById("add-comment")) {
         document.getElementById("add-comment").addEventListener("click", function () {
             document.getElementById("add-comment-form").classList.remove("visually-hidden")

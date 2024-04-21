@@ -12,6 +12,7 @@ use App\Models\Season;
 use App\Models\Type;
 use App\Models\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ContentController extends Controller
 {
@@ -22,7 +23,6 @@ class ContentController extends Controller
         $content = new Content();
         $content->title_rus = $request->title_rus;
         $content->title_eng = Str::slug($request->title_rus);
-        // $c
         $content->image = 'public/storage/' . $path;
         $content->type = $request->type;
         if ($request->has('description') && $request->description) $content->description = $request->description;
@@ -48,16 +48,17 @@ class ContentController extends Controller
             }
         }
 
-        return redirect()->route('admin.contents.information', ['content' => $content->id])->with(['success' => 'Контент создан успешно!']);
+        return redirect()->route('admin.contents.information', ['content' => $content->id])->with(['success' => 'Сюжет создан успешно!']);
     }
 
     public function edit(Request $request, Content $content)
     {
-        if ($request->title_rus != $content->title_rus) $content->title_rus = $request->title_rus;
+        if ($request->title_rus != $content->title_rus) {
+            $content->title_rus = $request->title_rus;
+            $content->title_eng = Str::slug($request->title_rus);
+        }
         ($request->has('published')) ? $content->published = 1 : $content->published = 0;
-        if ($request->title_eng != $content->title_eng) $content->title_eng = str_replace(" ", "-", $request->title_eng);
         if ($request->description != $content->description) $content->description = $request->description;
-        if ($request->year != $content->year) $content->year = $request->year;
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $path = $image->store('contents/' . str_replace(" ", "-", $request->title_eng) . '/', 'public');
@@ -136,6 +137,17 @@ class ContentController extends Controller
             }
         }
 
-        return redirect()->back()->with(['success' => 'Контент обновлен успешно!']);
+        return redirect()->back()->with(['success' => 'Сюжет обновлен успешно!']);
+    }
+
+    function remove(Content $content)
+    {
+        Content_attribute::where("content", $content->id)->delete();
+        Content_category::where("content", $content->id)->delete();
+        $video = Video::where("content", $content->id)->first();
+        Storage::disk('local')->delete("public/contents/" . $content->title_eng . "/" . array_reverse(explode("/", $video->url))[0]);
+        $video->delete();
+        $content->delete();
+        return redirect()->route('admin.contents')->with(['success' => 'Сюжет был удален успешно!']);
     }
 }
