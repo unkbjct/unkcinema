@@ -28,13 +28,7 @@
                                 <div class="form-text">Обязательное</div>
                             </div>
                         </div>
-                        <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label for="title_eng" class="form-label">Название на английском</label>
-                                <input required type="text" class="form-control" name="title_eng" id="title_eng">
-                                <div class="form-text">Или транскрипция, обязательное.</div>
-                            </div>
-                        </div>
+
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label for="description" class="form-label">Описание</label>

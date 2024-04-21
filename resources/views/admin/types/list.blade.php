@@ -25,18 +25,15 @@
                         <input required type="text" class="form-control" name="title" placeholder="Название вида">
                         <div id="emailHelp" class="form-text">Уникальное</div>
                     </div>
-                    <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" name="isOneVideo" type="checkbox" id="is-one-video">
-                        <label class="form-check-label" for="is-one-video">Данный вид имеет одно видео (Как фильм)</label>
-                    </div>
                     <button class="btn btn-dark">Добавить</button>
                 </form>
             </div>
             <div>
-                <form action="{{route('admin.types')}}" method="GET" class="row gy-4">
+                <form action="{{ route('admin.types') }}" method="GET" class="row gy-4">
                     <div class="col-lg-4">
                         <div class="mb-3">
-                            <input name="title" value="{{old('title')}}" type="text" class="form-control" placeholder="Название" id="title_rus">
+                            <input name="title" value="{{ old('title') }}" type="text" class="form-control"
+                                placeholder="Название" id="title_rus">
                         </div>
                     </div>
                     <div class="col-lg-4">

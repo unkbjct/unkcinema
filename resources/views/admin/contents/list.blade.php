@@ -14,10 +14,11 @@
                 </div>
             </div>
             <div>
-                <form method="GET" action="{{route('admin.contents')}}" class="row gy-4">
+                <form method="GET" action="{{ route('admin.contents') }}" class="row gy-4">
                     <div class="col-lg-4">
                         <div class="mb-3">
-                            <input name="title" type="text" value="{{old('title')}}" class="form-control" placeholder="Название" id="title_rus">
+                            <input name="title" type="text" value="{{ old('title') }}" class="form-control"
+                                placeholder="Название" id="title_rus">
                         </div>
                     </div>
                     <div class="col-lg-4">
@@ -36,6 +37,9 @@
                             <th scope="col">#</th>
                             <th scope="col">Название</th>
                             <th scope="col">Тип</th>
+                            <th scope="col">Длительность</th>
+                            <th scope="col">Дата созднания</th>
+                            <th scope="col">Дата последнего обнавления</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>

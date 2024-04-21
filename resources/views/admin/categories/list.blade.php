@@ -5,14 +5,13 @@
 @endsection
 
 @section('admin')
-
     <div class="container">
         <div class="card card-body border border-danger">
             <div class="d-flex align-items-center mb-5">
-                <div class="display-5">Жанры контента</div>
+                <div class="display-5">Теги файлов</div>
                 <div class="ms-auto">
                     <a href="{{ route('admin.contents.create') }}" class="btn btn-dark" data-bs-toggle="collapse"
-                        data-bs-target="#collapseCreate">Добавить новый жанр</a>
+                        data-bs-target="#collapseCreate">Добавить новый тег</a>
                 </div>
             </div>
             <div class="collapse" id="collapseCreate">
@@ -20,7 +19,7 @@
                     @csrf
                     <div class="mb-3">
                         <div class="input-group">
-                            <input required type="text" class="form-control" name="title" placeholder="Название вида">
+                            <input required type="text" class="form-control" name="title" placeholder="Название тега">
                             <button class="btn btn-dark">Добавить</button>
                         </div>
                         <div id="emailHelp" class="form-text">Уникальное</div>
@@ -28,10 +27,11 @@
                 </form>
             </div>
             <div>
-                <form action="{{route('admin.categories')}}" method="GET" class="row gy-4">
+                <form action="{{ route('admin.categories') }}" method="GET" class="row gy-4">
                     <div class="col-lg-4">
                         <div class="mb-3">
-                            <input name="title" value="{{old('title')}}" type="text" class="form-control" placeholder="Название" id="title_rus">
+                            <input name="title" value="{{ old('title') }}" type="text" class="form-control"
+                                placeholder="Поиск по названию" id="title_rus">
                         </div>
                     </div>
                     <div class="col-lg-4">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\PostControllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Content;
+use Illuminate\Support\Str;
 use App\Models\Content_attribute;
 use App\Models\Content_category;
 use App\Models\Episode;
@@ -20,11 +21,10 @@ class ContentController extends Controller
         $path = $image->store('contents/' . str_replace(" ", "-", $request->title_eng) . '/', 'public');
         $content = new Content();
         $content->title_rus = $request->title_rus;
-        $content->title_eng = str_replace(" ", "-", $request->title_eng);
+        $content->title_eng = Str::slug($request->title_rus);
         // $c
         $content->image = 'public/storage/' . $path;
         $content->type = $request->type;
-        $content->year = $request->year;
         if ($request->has('description') && $request->description) $content->description = $request->description;
         $content->save();
 

@@ -30,11 +30,6 @@
                             name="title" placeholder="Название вида">
                         <div id="emailHelp" class="form-text">Уникальное</div>
                     </div>
-                    <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" @if ($type->is_one_video) checked @endif name="isOneVideo"
-                            type="checkbox" id="is-one-video">
-                        <label class="form-check-label" for="is-one-video">Данный вид имеет одно видео (Как фильм)</label>
-                    </div>
                     <div class="">
                         <label for="title" class="form-label">Характеристики данного вида</label>
                         <div class="mb-3">

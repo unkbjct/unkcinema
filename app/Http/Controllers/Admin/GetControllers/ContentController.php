@@ -19,7 +19,7 @@ class ContentController extends Controller
     public function contents(Request $request)
     {
         $request->flash();
-        
+
         $contents = Content::join("types", "contents.type", "=", "types.id")
             ->select("contents.*", "types.title as type")->orderByDesc('id');
 
@@ -58,15 +58,8 @@ class ContentController extends Controller
             ->join("attributes", "content_attributes.attribute", "=", "attributes.id")
             ->select("attributes.name as name", "attributes.id as id", "content_attributes.value as value")
             ->get();
-        if ($content->type->is_one_video) {
-            $content->video = Video::where("content", $content->id)->first();
-        } else {
-            $content->seasons = Season::where("content", $content->id)->orderByDesc('id')->get();
-            $content->seasons->transform(function ($season) {
-                $season->episodes = Episode::where("season", $season->id)->orderByDesc('id')->get();
-                return $season;
-            });
-        }
+        $content->video = Video::where("content", $content->id)->first();
+
         $types = Type::orderBy("title")->get();
         $types->transform(function ($item) {
             $item->attributes = Attribute::where("type", $item->id)->get();

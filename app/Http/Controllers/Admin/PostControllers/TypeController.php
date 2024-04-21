@@ -16,7 +16,6 @@ class TypeController extends Controller
 
         $type = new Type();
         $type->title = $request->title;
-        $type->is_one_video = ($request->has("isOneVideo")) ? 1 : 0;
         $type->save();
         return redirect()->back()->with(['success' => 'Вид добавлен успешно!']);
     }
@@ -27,7 +26,6 @@ class TypeController extends Controller
             return redirect()->back()->withErrors(['uniq' => 'Вид должен быть уникальным!']);
 
         if ($type->title != $request->title) $type->title = $request->title;
-        $type->is_one_video = ($request->has("isOneVideo")) ? 1 : 0;
         $type->save();
 
         if ($request->has('attributes')) {
