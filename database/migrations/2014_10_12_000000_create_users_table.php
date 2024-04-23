@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateUsersTable extends Migration
@@ -16,13 +17,22 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->enum('role', ['ADMIN', 'USER']);
-            $table->string('login')->unique();
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('img', 300)->nullable();
+            $table->string('cover', 300)->nullable();
+            $table->string('login', 200)->unique();
+            $table->string('email', 200)->unique();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
         });
+        DB::table('users')->insert(
+            array(
+                'role' => 'ADMIN',
+                'email' => 'admin@mail.ru',
+                'login' => 'admin',
+                'password' => '$2a$12$ZcIGC/IG4Xv2W/BgASPWSOFFetksvxrqC7hkds99Fgo2qX0Pp6yYu',
+            )
+        );
     }
 
     /**

@@ -15,7 +15,7 @@
                 <div class="display-5">Категории</div>
                 <div class="ms-auto">
                     <a href="{{ route('admin.contents.create') }}" class="btn btn-dark" data-bs-toggle="collapse"
-                        data-bs-target="#collapseCreate">Добавить новый вид</a>
+                        data-bs-target="#collapseCreate">Добавить новую категорию</a>
                 </div>
             </div>
             <div class="small d-flex align-items-center gap-2 mb-4">
