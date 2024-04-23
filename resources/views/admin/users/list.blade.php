@@ -12,34 +12,20 @@
     <div class="container">
         <div class="card card-body border border-danger">
             <div class="d-flex align-items-center mb-5">
-                <div class="display-5">Категории</div>
-                <div class="ms-auto">
-                    <a href="{{ route('admin.contents.create') }}" class="btn btn-dark" data-bs-toggle="collapse"
-                        data-bs-target="#collapseCreate">Добавить новый вид</a>
-                </div>
-            </div>
-            <div class="collapse" id="collapseCreate">
-                <form method="POST" action="{{ route('core.admin.types.create') }}" class="mb-5">
-                    @csrf
-                    <div class="mb-3">
-                        <input required type="text" class="form-control" name="title" placeholder="Название вида">
-                        <div id="emailHelp" class="form-text">Уникальное</div>
-                    </div>
-                    <button class="btn btn-dark">Добавить</button>
-                </form>
+                <div class="display-5">Пользователи</div>
             </div>
             <div>
-                <form action="{{ route('admin.types') }}" method="GET" class="row gy-4">
+                <form action="{{ route('admin.users') }}" method="GET" class="row gy-4">
                     <div class="col-lg-4">
                         <div class="mb-3">
-                            <input name="title" value="{{ old('title') }}" type="text" class="form-control"
-                                placeholder="Название" id="title_rus">
+                            <input name="login" value="{{ old('login') }}" type="text" class="form-control"
+                                placeholder="Название или почта" id="login">
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div>
                             <button class="btn btn-danger">Применить</button>
-                            <button class="btn btn-dark">Сбросить</button>
+                            <a href="{{ route('admin.users') }}" class="btn btn-dark">Сбросить</a>
                         </div>
                     </div>
                     <div class="col-lg-4">
@@ -100,7 +86,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <th colspan="4">
+                                <th colspan="110">
                                     <div class="p-3 text-center text-muted">
                                         По заданным фильтрам ничего не найдено!
                                     </div>

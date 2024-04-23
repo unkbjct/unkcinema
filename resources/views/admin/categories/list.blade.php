@@ -37,7 +37,7 @@
                     <div class="col-lg-4">
                         <div>
                             <button class="btn btn-danger">Применить</button>
-                            <button class="btn btn-dark">Сбросить</button>
+                            <a href="{{ route('admin.categories') }}" class="btn btn-dark">Сбросить</a>
                         </div>
                     </div>
                     <div class="col-lg-4">

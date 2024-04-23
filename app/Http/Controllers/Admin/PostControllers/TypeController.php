@@ -4,8 +4,13 @@ namespace App\Http\Controllers\Admin\PostControllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attribute;
+use App\Models\Content;
+use App\Models\Content_attribute;
+use App\Models\Content_category;
 use App\Models\Type;
+use App\Models\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TypeController extends Controller
 {
@@ -55,7 +60,10 @@ class TypeController extends Controller
                         break;
                     };
                 }
-                if (!$isFounded) $oldAttr->delete();
+                if (!$isFounded) {
+                    Content_attribute::where("attribute", "=", $oldAttr->id)->delete();
+                    $oldAttr->delete();
+                }
             }
         }
 
@@ -64,6 +72,14 @@ class TypeController extends Controller
 
     public function remove(Type $type)
     {
+        foreach (Content::where("type", "=", $type->id)->get() as $content) {
+            Content_attribute::where("content", $content->id)->delete();
+            Content_category::where("content", $content->id)->delete();
+            $video = Video::where("content", $content->id)->first();
+            Storage::disk('local')->delete("public/contents/" . $content->title_eng . "/" . array_reverse(explode("/", $video->url))[0]);
+            $video->delete();
+            $content->delete();
+        }
         $type->delete();
         return redirect()->route('admin.types')->with(['success' => 'Категрия успешно удалена!']);
     }

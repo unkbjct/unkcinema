@@ -29,10 +29,7 @@ class UserController extends Controller
     {
         $bookmarks = json_decode(Cookie::get("bookmarks", '[]'));
 
-        // dd($bookmarks);
-
-        $contents = Content::whereIn("contents.id", $bookmarks)->join("videos", "contents.id", "=", "videos.content")->select("contents.*", "videos.duration")->get();
-        // dd($contents);
+        $contents = Content::whereIn("contents.id", $bookmarks)->where("published", 1)->join("videos", "contents.id", "=", "videos.content")->select("contents.*", "videos.duration")->get();
 
         return view("user.bookmakrs", [
             'contents' => $contents,

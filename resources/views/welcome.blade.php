@@ -74,14 +74,14 @@
                                 temporibus architecto cumque ipsam hic, totam accusamus eius ea officiis itaque doloremque
                                 a, adipisci incidunt illum natus. Unde.
                             </div>
-                            <div class="text-secondary small">Длительность:
+                            <div class="small">Длительность:
                                 @if ($c->duration >= 3600)
                                     {{ gmdate('H:i:s', $c->duration) }}
                                 @else
                                     {{ gmdate('i:s', $c->duration) }}
                                 @endif
                             </div>
-                            <div class="text-secondary small">Автор: <a href="#">unkbjct</a></div>
+                            <div class="text-secondary small">{{ $c->dateAsCarbon->diffForHumans() }}</div>
                         </div>
                     </div>
                 @endforeach

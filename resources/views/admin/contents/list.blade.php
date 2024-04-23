@@ -15,19 +15,50 @@
             </div>
             <div>
                 <form method="GET" action="{{ route('admin.contents') }}" class="row gy-4">
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                         <div class="mb-3">
                             <input name="title" type="text" value="{{ old('title') }}" class="form-control"
                                 placeholder="Название" id="title_rus">
                         </div>
                     </div>
+                    <div class="col-lg-3">
+                        <select class="form-select" name="type" id="type">
+                            <option selected value="">Категория(все)</option>
+                            @foreach ($types as $type)
+                                <option value="{{ $type->id }}" @if (old('type') == $type->id) selected @endif>
+                                    {{ $type->title }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-danger dropdown-toggle" type="button" data-bs-auto-close="false"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Теги @if (!!old('categories'))
+                                    ({{ sizeof(old('categories')) }})
+                                @endif
+                            </button>
+                            <ul class="dropdown-menu">
+                                @foreach ($categories as $cat)
+                                    <label class="dropdown-item" for="category-{{ $cat->id }}">
+                                        <div class=" form-check form-switch">
+                                            <input type="checkbox" @if (!!old('categories') && in_array($cat->id, old('categories'))) checked @endif
+                                                class="form-check-input" name="categories[]" value="{{ $cat->id }}"
+                                                id="category-{{ $cat->id }}">
+                                            <span class="form-check-label">{{ $cat->title }}
+                                            </span>
+                                        </div>
+                                    </label>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
                     <div class="col-lg-4">
                         <div>
                             <button class="btn btn-danger">Применить</button>
-                            <button class="btn btn-dark">Сбросить</button>
+                            <a href="{{ route('admin.contents') }}" class="btn btn-dark">Сбросить</a>
                         </div>
                     </div>
-                    <div class="col-lg-4"></div>
                 </form>
             </div>
             <div>
@@ -49,7 +80,9 @@
                             <tr>
                                 <th scope="row">1</th>
                                 <td>{{ $content->title_rus }}</td>
-                                <td>{{ $content->type }}</td>
+                                <td><a
+                                        href="{{ route('admin.types.information', ['type' => $content->typeId]) }}">{{ $content->type }}</a>
+                                </td>
                                 <td>{{ $content->duration }}</td>
                                 <td>{{ $content->extension }}</td>
                                 <td>{{ $content->created_at }}</td>

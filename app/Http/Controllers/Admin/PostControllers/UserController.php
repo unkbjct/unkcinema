@@ -19,11 +19,16 @@ class UserController extends Controller
         ]);
     }
 
-    function view()
+    function view(Request $request)
     {
+        $request->flash();
+        $users = User::select();
+
+        if ($request->has('login') && $request->login != null)
+            $users->where("login", "LIKE", "%{$request->login}%")->orWhere("email", "LIKE", "%{$request->login}%");
 
         return view('admin.users.list', [
-            'users' => User::all()
+            'users' => $users->get()
         ]);
     }
 }

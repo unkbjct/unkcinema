@@ -70,6 +70,7 @@
                 )
                 // progress.find('.progress-bar').removeClass('progress-bar-striped');
                 // progress.find('.progress-bar').removeClass('progress-bar-animated');
+                window.location.reload();
                 hideProgress();
             });
 
@@ -239,7 +240,7 @@
         </div>
         <div class="card card-body border border-danger mt-5">
             <div class="mb-3">
-                <div class="fw-semibold h4">Добавление видео</div>
+                <div class="fw-semibold h4">Информация о видео</div>
             </div>
             <div class="div">
                 @csrf
@@ -305,7 +306,27 @@
                                 </div>
                             </div>
                         </div> --}}
-
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="duration" class="form-label">Время в секундах</label>
+                            <input required type="text" value="{{ $content->video->duration }}" class="form-control"
+                                name="duration" id="duration">
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="extension" class="form-label">Формат</label>
+                            <input required type="text" value="{{ $content->video->extension }}" class="form-control"
+                                name="extension" id="extension">
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="extension" class="form-label">Разрешение</label>
+                            <input required type="text" value="{{ $content->video->extension }}" class="form-control"
+                                name="extension" id="extension">
+                        </div>
+                    </div>
 
                 </div>
             </div>

@@ -15,6 +15,7 @@ use App\Models\Type;
 use App\Models\User;
 use App\Models\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 
 class SingleController extends Controller
@@ -25,9 +26,16 @@ class SingleController extends Controller
         if ($continue) {
             $continue->content = Content::find($continue->content);
         }
+
+
+        $content = Auth::check() && Auth::user()->role === "ADMIN" ? Content::where("published", 0)->orWhere("published", 1) : Content::where("published", 1);
+
         return view('welcome', [
             'continue' => $continue,
-            'content' => Content::where('published', 1)->join("videos", "contents.id", "=", "videos.content")->select("contents.*", "videos.duration")->get(),
+            'content' => $content->join("videos", "contents.id", "=", "videos.content")
+                ->select("contents.*", "videos.duration")
+                ->orderByDesc("contents.id")
+                ->get(),
         ]);
     }
 
@@ -38,8 +46,7 @@ class SingleController extends Controller
         $typesList = Type::orderByDesc("id")->get();
         $categoriesList = Category::orderByDesc("id")->get();
 
-        $contentsList = Content::where("contents.published", 1)
-            ->orderByDesc("contents.id");
+        $contentsList = Auth::check() && Auth::user()->role === "ADMIN" ? Content::where("published", 0)->orWhere("published", 1) : Content::where("published", 1);
 
         if ($request->has('title') && $request->title) $contentsList->where("title_rus", "LIKE", "%{$request->title}%");
         if ($request->has('types') && $request->types) $contentsList->whereIn("type",  $request->types);
@@ -66,7 +73,7 @@ class SingleController extends Controller
         }
 
 
-        $contentsList = $contentsList->join("videos", "contents.id", "=", "videos.content")->get();
+        $contentsList = $contentsList->join("videos", "contents.id", "=", "videos.content")->select("contents.*", "videos.duration")->get();
 
         return view('search', [
             'contentsList' => $contentsList,
@@ -134,57 +141,5 @@ class SingleController extends Controller
     {
         // return t
         return $tgUser;
-    }
-
-    public function random(Request $request)
-    {
-        $request->flash();
-        $typesList = Type::orderByDesc("id")->get();
-        $categoriesList = Category::orderByDesc("id")->get();
-
-        $content = Content::where("published", 1);
-        if ($request->has('title') && $request->title) $content->where("title_rus", "LIKE", "%{$request->title}%");
-        if ($request->has('types') && $request->types) $content->whereIn("type",  $request->types);
-        if ($request->has('categories') && $request->categories) {
-            $categoriesArray = Content_category::whereIn("category", $request->categories)->select("content")->distinct()->get();
-            $tmpArray = [];
-            foreach ($categoriesArray as $contentId) {
-                array_push($tmpArray, $contentId->content);
-            }
-            $content->whereIn("contents.id", $tmpArray);
-        }
-        if ($request->has('add') && $request->add) {
-            $adds = $request->add;
-            $tmpQuery = Content_attribute::where(function ($query) use ($adds) {
-                foreach ($adds as $addItem) {
-                    $query->orwhere('value', 'like',  "{$addItem}");
-                }
-            })->select('content')->distinct()->get();
-            $tmpArray = [];
-            foreach ($tmpQuery as $contentId) {
-                array_push($tmpArray, $contentId->content);
-            }
-            if ($tmpArray) $content->whereIn("contents.id", $tmpArray);
-        }
-        $content = $content->inRandomOrder()->first();
-
-        if ($content) {
-            $content->type = Type::find($content->type);
-            $content->attributes = Content_attribute::where("content", $content->id)
-                ->join("attributes", "content_attributes.attribute", "=", "attributes.id")
-                ->select("content_attributes.value as value", "attributes.name as name")
-                ->get();
-
-            $content->categories = Content_category::where("content", $content->id)
-                ->join("categories", "content_categories.category", "=", "categories.id")
-                ->select("categories.title")
-                ->get();
-        }
-
-        return view('random', [
-            'content' => $content,
-            'typesList' => $typesList,
-            'categoriesList' => $categoriesList,
-        ]);
     }
 }

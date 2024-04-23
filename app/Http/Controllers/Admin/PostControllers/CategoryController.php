@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\PostControllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Content_category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -20,7 +21,9 @@ class CategoryController extends Controller
 
     public function remove(Category $category)
     {
+        Content_category::where("category", "=", $category->id)->delete();
         $category->delete();
+
         return redirect()->route('admin.categories')->with(['success' => 'Тег успешно удален!']);
     }
 }

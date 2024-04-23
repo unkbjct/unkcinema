@@ -22,14 +22,24 @@ class ContentController extends Controller
 
         $contents = Content::join("types", "contents.type", "=", "types.id")
             ->join("videos", "contents.id", "=", "videos.content")
-            ->select("contents.*", "types.title as type", "videos.duration", "videos.extension")->orderByDesc('id');
+            ->join("content_categories", "contents.id", "=", "content_categories.content")
+            ->distinct()
+            ->select("contents.*", "types.title as type", "types.id as typeId", "videos.duration", "videos.extension")->orderByDesc('id');
 
         if ($request->has('title') && $request->title != null)
             $contents->where("title_rus", "LIKE", "%{$request->title}%");
+        if ($request->has('type') && $request->type != null)
+            $contents->where("types.id", "=", $request->type);
+        if ($request->has('categories') && sizeof($request->input("categories")) > 0)
+            $contents->whereIn("content_categories.category", $request->input("categories"));
+        // dd($request->input("categories"));
+
 
         $contents = $contents->get();
         return view('admin.contents.list', [
             'contents' => $contents,
+            'types' => Type::all(),
+            'categories' => Category::all(),
         ]);
     }
 

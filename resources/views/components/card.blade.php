@@ -18,6 +18,5 @@
                 {{ gmdate('i:s', $c->duration) }}
             @endif
         </div>
-        <div class="text-secondary small">Автор: <a href="#">unkbjct</a></div>
     </div>
 </div>
