@@ -31,6 +31,8 @@ class CreateUsersTable extends Migration
                 'email' => 'admin@mail.ru',
                 'login' => 'admin',
                 'password' => '$2a$12$ZcIGC/IG4Xv2W/BgASPWSOFFetksvxrqC7hkds99Fgo2qX0Pp6yYu',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
             )
         );
     }
