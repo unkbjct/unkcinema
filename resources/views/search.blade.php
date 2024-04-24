@@ -48,7 +48,7 @@
                         <div class="col-md-6">
                             <div class="card-body bg-dark">
                                 <div class="fw-semibold mb-4">
-                                    Жанр
+                                    Теги
                                 </div>
                                 @foreach ($categoriesList as $category)
                                     <div class="form-check form-switch">
