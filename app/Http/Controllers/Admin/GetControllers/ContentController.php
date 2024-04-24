@@ -21,8 +21,8 @@ class ContentController extends Controller
         $request->flash();
 
         $contents = Content::join("types", "contents.type", "=", "types.id")
-            ->join("videos", "contents.id", "=", "videos.content")
-            ->join("content_categories", "contents.id", "=", "content_categories.content")
+            ->leftJoin("videos", "contents.id", "=", "videos.content")
+            ->leftJoin("content_categories", "contents.id", "=", "content_categories.content")
             ->distinct()
             ->select("contents.*", "types.title as type", "types.id as typeId", "videos.duration", "videos.extension")->orderByDesc('id');
 

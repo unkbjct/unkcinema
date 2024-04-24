@@ -39,7 +39,8 @@
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label for="image" class="form-label">Изображение</label>
-                                <input required type="file" class="form-control" name="image" id="image">
+                                <input required type="file" accept=".jpg,.jpeg,.png," class="form-control" name="image"
+                                    id="image">
                                 <div class="form-text">Обязательное.</div>
                             </div>
                         </div>

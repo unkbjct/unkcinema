@@ -166,7 +166,8 @@
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label for="image" class="form-label">Изменить изображение</label>
-                                <input type="file" class="form-control" name="image" id="image">
+                                <input type="file" accept=".jpg,.jpeg,.png," class="form-control" name="image"
+                                    id="image">
                                 <div class="form-text">Обязательное.</div>
                             </div>
                         </div>
@@ -306,28 +307,22 @@
                                 </div>
                             </div>
                         </div> --}}
-                    <div class="col-lg-2">
-                        <div class="mb-3">
-                            <label for="duration" class="form-label">Время в секундах</label>
-                            <input required type="text" value="{{ $content->video->duration }}" class="form-control"
-                                name="duration" id="duration">
+                    @if (!!$content->video)
+                        <div class="col-lg-2">
+                            <div class="mb-3">
+                                <label for="duration" class="form-label">Время в секундах</label>
+                                <input required type="text" value="{{ $content->video->duration }}"
+                                    class="form-control" disabled name="duration" id="duration">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <div class="mb-3">
-                            <label for="extension" class="form-label">Формат</label>
-                            <input required type="text" value="{{ $content->video->extension }}" class="form-control"
-                                name="extension" id="extension">
+                        <div class="col-lg-2">
+                            <div class="mb-3">
+                                <label for="extension" class="form-label">Формат</label>
+                                <input required type="text" value="{{ $content->video->extension }}"
+                                    class="form-control" disabled name="extension" id="extension">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <div class="mb-3">
-                            <label for="extension" class="form-label">Разрешение</label>
-                            <input required type="text" value="{{ $content->video->extension }}" class="form-control"
-                                name="extension" id="extension">
-                        </div>
-                    </div>
-
+                    @endif
                 </div>
             </div>
         </div>

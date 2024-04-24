@@ -57,6 +57,9 @@ class ContentController extends Controller
             $content->title_rus = $request->title_rus;
             $content->title_eng = Str::slug($request->title_rus);
         }
+        if ($request->has('published') && !Video::where('content', $content->id)->first())
+            return redirect()->back()->withErrors(['published' => 'Нельзя сделать сюжет доступным, если у него нет видео!']);
+
         ($request->has('published')) ? $content->published = 1 : $content->published = 0;
         if ($request->description != $content->description) $content->description = $request->description;
         if ($request->hasFile('image')) {
@@ -145,8 +148,10 @@ class ContentController extends Controller
         Content_attribute::where("content", $content->id)->delete();
         Content_category::where("content", $content->id)->delete();
         $video = Video::where("content", $content->id)->first();
-        Storage::disk('local')->delete("public/contents/" . $content->title_eng . "/" . array_reverse(explode("/", $video->url))[0]);
-        $video->delete();
+        if ($video) {
+            Storage::disk('local')->delete("public/contents/" . $content->title_eng . "/" . array_reverse(explode("/", $video->url))[0]);
+            $video->delete();
+        }
         $content->delete();
         return redirect()->route('admin.contents')->with(['success' => 'Сюжет был удален успешно!']);
     }

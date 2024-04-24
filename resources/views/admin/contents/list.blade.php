@@ -83,7 +83,7 @@
                                 <td><a
                                         href="{{ route('admin.types.information', ['type' => $content->typeId]) }}">{{ $content->type }}</a>
                                 </td>
-                                <td>{{ $content->duration }}</td>
+                                <td>{{ $content->duration ?? 'Нет видео' }}</td>
                                 <td>{{ $content->extension }}</td>
                                 <td>{{ $content->created_at }}</td>
                                 <td>{{ $content->updated_at }}</td>

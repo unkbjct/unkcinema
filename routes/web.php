@@ -52,7 +52,7 @@ Route::group(['prefix' => 'user'], function () {
     Route::get("/{login}", [UserViews::class, 'profile'])->name('user.profile');
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => 'auth', 'middleware' => IsAdmin::class], function () { // ADMIN ----------------------------------------------------
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', IsAdmin::class]], function () { // ADMIN ----------------------------------------------------
 
     Route::get('/', [AdminContentViews::class, 'contents'])->name("admin");
 
