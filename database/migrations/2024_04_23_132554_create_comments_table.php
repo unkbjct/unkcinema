@@ -21,7 +21,7 @@ class CreateCommentsTable extends Migration
             $table->foreign('parent_id')->references('id')->on('comments')->onDelete('cascade');
             $table->unsignedBigInteger('user');
             $table->foreign('user')->references('id')->on('users')->onDelete('cascade');
-            $table->string('messsage', 5000);
+            $table->string('message', 5000);
             $table->timestamps();
         });
     }
