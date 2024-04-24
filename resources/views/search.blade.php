@@ -94,9 +94,7 @@
                             </a>
                             <h5>{{ $c->title_rus }}</h5>
                             <div class="description">
-                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Obcaecati quaerat optio repellat
-                                temporibus architecto cumque ipsam hic, totam accusamus eius ea officiis itaque doloremque
-                                a, adipisci incidunt illum natus. Unde.
+                                {{ $c->description }}
                             </div>
                             <div class="small">Длительность:
                                 @if ($c->duration >= 3600)
