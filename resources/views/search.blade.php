@@ -29,7 +29,7 @@
             <div class="collapse" id="collapseExample">
                 <div class="card-body bg-danger">
                     <div class="row gy-4">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="card-body bg-dark">
                                 <div class="fw-semibold mb-4">
                                     Категория
@@ -45,7 +45,7 @@
                                 @endforeach
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="card-body bg-dark">
                                 <div class="fw-semibold mb-4">
                                     Жанр
@@ -59,23 +59,6 @@
                                             for="category-{{ $category->id }}">{{ $category->title }}</label>
                                     </div>
                                 @endforeach
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card-body bg-dark">
-                                <div class="fw-semibold mb-4">
-                                    Доп. фильтры
-                                </div>
-                                <div class="mb-3">
-                                    <input type="text" name="add[country]"
-                                        @if (old('add') && isset(old('add')['country'])) value="{{ old('add')['country'] }}" @endif
-                                        class="form-control form-control-sm" placeholder="Страна">
-                                </div>
-                                <div class="mb-3">
-                                    <input type="text" name="add[year]"
-                                        @if (old('add') && isset(old('add')['year'])) value="{{ old('add')['year'] }}" @endif
-                                        class="form-control form-control-sm" placeholder="Год">
-                                </div>
                             </div>
                         </div>
                     </div>
