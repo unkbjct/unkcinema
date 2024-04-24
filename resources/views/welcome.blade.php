@@ -20,43 +20,6 @@
 
 @section('main')
     <div class="container">
-        {{-- @if ($continue)
-            <section id="continue" class="mb-5">
-                <div class="my display-5 mb-4">Продолжить просмотр</div>
-                <div class="card card-body bg-dark text-white" style="cursor: auto">
-                    <div class="row gy-4">
-                        <div class="col-md-1">
-                            <img class="w-100" src="{{ $continue->content->image }}" alt="">
-                        </div>
-                        <div class="col-md-11">
-                            <div class="d-flex flex-column justify-content-evenly h-100">
-                                <div class="me-4">
-                                    <div class="fs-3 fw-semibold">{{ $continue->content->title_rus }}</div>
-                                </div>
-                                @if ($continue->isSerial)
-                                    <div>{{ $continue->serialInfo->season }} Сезон {{ $continue->serialInfo->episode }}
-                                        Серия </div>
-                                @endif
-                                <div class="d-flex align-items-center">
-                                    @if ($continue->isSerial)
-                                        <a href="{{ route('content', [
-                                            'content' => $continue->content,
-                                            'episope' => $continue->serialInfo->episode,
-                                            'season' => $continue->serialInfo->season,
-                                        ]) }}"
-                                            class="btn btn-danger btn-sm me-4">Продолжить просмотр</a>
-                                    @else
-                                        <a href="{{ route('content', ['content' => $continue->content]) }}"
-                                            class="btn btn-danger btn-sm me-4">Продолжить просмотр</a>
-                                    @endif
-                                    <div>Вы остановились на <span id="currentTime">{{ $continue->time }}</span></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        @endif --}}
         <section id="categories" class="mb-5">
             <h1 class="mb-4">Послдение добавленные сюжеты</h1>
             <div class="row">

@@ -25,13 +25,13 @@
                 <div>
                     @csrf
                     <div class="mb-3">
-                        <label for="title" class="form-label">Название вада</label>
+                        <label for="title" class="form-label">Название категории</label>
                         <input required type="text" class="form-control" id="title" value="{{ $type->title }}"
                             name="title" placeholder="Название вида">
                         <div id="emailHelp" class="form-text">Уникальное</div>
                     </div>
                     <div class="">
-                        <label for="title" class="form-label">Характеристики данного вида</label>
+                        <label for="title" class="form-label">Характеристики данной категории</label>
                         <div class="mb-3">
                             <div class="input-group">
                                 <input type="text" class="form-control" id="value-attribute"
