@@ -24,7 +24,7 @@
                     isVideo: (Boolean)(browseFile.data("is-video")),
                     contentId: browseFile.data("content-id"),
                     episodeId: browseFile.data("episode-id"),
-                    // season = 
+                    // season =
                 }, // CSRF token
                 fileType: ['mp4', 'avi', 'mkv'],
                 chunkSize: 10 * 1024 *
@@ -122,7 +122,7 @@
                     <div class="col-md-2">
                         <img class="w-100" src="{{ asset($content->image) }}" alt="">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-10">
                         <div>
                             <div class="display-5 mb-3">{{ $content->title_rus }}</div>
                         </div>
@@ -292,7 +292,7 @@
                     <div class="col-lg-12">
 
                     </div>
-                    {{-- 
+                    {{--
                         <div class="container pt-4">
                             <div class="row justify-content-center">
                                 <div class="col-md-8">

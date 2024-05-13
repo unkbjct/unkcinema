@@ -21,7 +21,7 @@
 @section('main')
     <div class="container">
         <section id="categories" class="mb-5">
-            <h1 class="mb-4">Послдение добавленные сюжеты</h1>
+            <h1 class="mb-4">Последние добавленные сюжеты</h1>
             <div class="row">
                 @foreach ($content as $c)
                     <div class="col-lg-3">
